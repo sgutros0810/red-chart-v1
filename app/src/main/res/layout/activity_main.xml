@@ -31,9 +31,11 @@
             android:textSize="17dp" />
 
         <EditText
+            android:id="@+id/editTextPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:inputType="phone"
             android:hint="Teléfono" />
 
         <Button
