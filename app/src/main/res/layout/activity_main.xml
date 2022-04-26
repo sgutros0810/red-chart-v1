@@ -30,13 +30,33 @@
             android:textAlignment="center"
             android:textSize="17dp" />
 
-        <EditText
-            android:id="@+id/editTextPhone"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:inputType="phone"
-            android:hint="Teléfono" />
+            android:orientation="horizontal"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ccp_autoDetectCountry="true"
+                tools:ccp_contentColor="#fcfdfd"
+                tools:ccp_textSize="20dp"
+                android:layout_marginTop="22dp"/>
+
+
+            <EditText
+                android:id="@+id/editTextPhone"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:inputType="phone"
+                android:hint="Teléfono" />
+
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/btnSendCode"
