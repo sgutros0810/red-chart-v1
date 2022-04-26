@@ -37,10 +37,12 @@
             android:hint="Teléfono" />
 
         <Button
+            android:id="@+id/btnSendCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@color/marron"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorPrimaryLigthmarron"
             android:text="ENVIAR CÓDIGO"
             android:textColor="@color/white"/>
 
