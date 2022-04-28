@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
            Toast.makeText(MainActivity.this, "Debe introducir el teléfono.",Toast.LENGTH_SHORT).show();
        }
        else {
+           //Mensaje largo
            Toast.makeText(MainActivity.this, "Teléfono: " + codeCountry + " " + phone, Toast.LENGTH_SHORT).show();
        }
     }
