@@ -54,22 +54,8 @@ public class MainActivity extends AppCompatActivity {
         Map<String,Object> map = new HashMap<>();
         //almacena un nombre
         map.put("name","Sofia");
-        map.put("nombre","Laura");
-        //firestore.collection("Usuarios").document().set(map);
-        firestore.collection("Usuarios")
-                .add(map)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        firestore.collection("Usuarios").document().set(map);
+
     }
 
     //Método que nos lleva a la página de verificar código
