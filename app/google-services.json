@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "281634538164",
+    "project_id": "proyecto-integrado-chat",
+    "storage_bucket": "proyecto-integrado-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281634538164:android:0923a0fc2da91568350de1",
+        "android_client_info": {
+          "package_name": "proyecto.red_chart_v1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281634538164-mm6fs2h7avnftlhnsns6rh4kpc2s7c54.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "proyecto.red_chart_v1",
+            "certificate_hash": "fab476202afd3c5d13b278c0e75de5ac7913a6f0"
+          }
+        },
+        {
+          "client_id": "281634538164-b6q731pn2vkro8lm2geb1k6sde1n79a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpSL-2qHKlStolodEecTOJKyj_Re8tPt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281634538164-b6q731pn2vkro8lm2geb1k6sde1n79a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
