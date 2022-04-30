@@ -34,10 +34,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'io.github.florent37:shapeofview:1.4.7'      //formas personalizadas
-    implementation 'com.hbb20:ccp:2.5.0'                       //seleccionador de codigo telefónico de cada pais
-
-    implementation platform('com.google.firebase:firebase-bom:29.3.1')
+    implementation 'io.github.florent37:shapeofview:1.4.7'              //formas personalizadas
+    implementation 'com.hbb20:ccp:2.5.0'                                //seleccionador de código telefónico de cada pais
+    implementation platform('com.google.firebase:firebase-bom:29.3.1')  //implementacion de Firebase
+    implementation 'com.google.firebase:firebase-firestore'             //implementacion de FirebaseCloud
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
