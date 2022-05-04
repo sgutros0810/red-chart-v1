@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +25,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
     Button mButtonCodeVerification;
     EditText mEditTextCodeVerification;
+    TextView mTextViewSMS;
+    ProgressBar mProgressBar;
+
     String mExtraPhone;
     String mVerificationId;
     AuthProvider mAuthProvider;
@@ -34,6 +39,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
         mButtonCodeVerification = findViewById(R.id.btnCodeVerification);
         mEditTextCodeVerification = findViewById(R.id.editTextCodeVerification);
+        mTextViewSMS = findViewById(R.id.textViewSMS);
+        mProgressBar = findViewById(R.id.progressBar);
+
 
         mAuthProvider = new AuthProvider();
         mExtraPhone = getIntent().getStringExtra("phone"); // recoge el valor introducido del mainActivity
@@ -57,9 +65,12 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
     //Verificaciones de autenticación
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        //Verificación de manera exitosa
+        //Si la verificación es de manera exitosa
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+            mProgressBar.setVisibility(View.GONE); //Se oculta el progress bar
+            mTextViewSMS.setVisibility(View.GONE); //Se oculta el texto
+
             String code = phoneAuthCredential.getSmsCode();   //Retorna el código que se le envió al usuario en el SMS
 
             //Si el codigo es diferente de null
@@ -69,17 +80,20 @@ public class CodeVerificationActivity extends AppCompatActivity {
             }
 
         }
-        //Verificación fallida
+        //Si la verificación es fallida
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-
+            mProgressBar.setVisibility(View.GONE); //Se oculta el progress bar
+            mTextViewSMS.setVisibility(View.GONE); //Se oculta el texto
+            //Mensaje que muestra el error
+            Toast.makeText(CodeVerificationActivity.this, "Se produjo un error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         //Método que obtiene la variable verificationId
         @Override
         public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(verificationId, forceResendingToken);
-            Toast.makeText(CodeVerificationActivity.this, "El código se envió", Toast.LENGTH_LONG).show();
+            Toast.makeText(CodeVerificationActivity.this, "El código se envió", Toast.LENGTH_SHORT).show();
             mVerificationId =  verificationId;
         }
     };
