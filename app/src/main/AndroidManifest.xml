@@ -13,10 +13,10 @@
         android:theme="@style/Theme.Redchartv1"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".CodeVerificationActivity"
-            android:exported="false" />
+            android:name=".activities.CodeVerificationActivity"
+            android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CodeVerificationActivity">
+    tools:context=".activities.CodeVerificationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,6 +44,7 @@
             android:layout_marginTop="100dp"/>
 
         <EditText
+            android:id="@+id/editTextCodeVerification"
             android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
