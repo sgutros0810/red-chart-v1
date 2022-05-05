@@ -44,8 +44,8 @@
                 android:layout_marginTop="100dp">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/person_pin"
                     android:layout_marginRight="10dp"/>
 
@@ -54,6 +54,7 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textInputUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nombre de usuario" />
@@ -76,6 +77,7 @@
         android:layout_marginTop="90dp" />
 
     <Button
+        android:id="@+id/btnConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button"

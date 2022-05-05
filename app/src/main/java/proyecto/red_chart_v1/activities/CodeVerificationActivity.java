@@ -19,6 +19,8 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.models.User;
@@ -53,7 +55,6 @@ public class CodeVerificationActivity extends AppCompatActivity {
         mUsersProvider = new UsersProvider();
 
         mExtraPhone = getIntent().getStringExtra("phone"); // recoge el valor introducido del mainActivity
-
 
         mAuthProvider.sendCodeAuth(mExtraPhone, mCallbacks);
 
@@ -113,17 +114,33 @@ public class CodeVerificationActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    User user = new User();
+                    final User user = new User();
                     user.setId(mAuthProvider.getId());  //Recoge el UID del usuario
                     user.setPhone(mExtraPhone);         //Recoge el teléfono del usuario
 
-                    //Crea el usuario
-                    mUsersProvider.create(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    //Valida si existe el UID del usuario
+                    mUsersProvider.getUserInfo(mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
-                        public void onSuccess(Void unused) {
-                            goToCompleteInfo();
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                            //Si no existe el UID
+                            if(!documentSnapshot.exists()){
+                                //Crea el usuario
+                                mUsersProvider.create(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        goToCompleteInfo();
+                                    }
+                                });
+                            //Si existe nos dirige a la actividad
+                            } else {
+                                goToCompleteInfo();
+                            }
+
                         }
                     });
+
+
 
 
                 } else {
