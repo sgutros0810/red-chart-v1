@@ -34,11 +34,13 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'io.github.florent37:shapeofview:1.4.7'                      //formas personalizadas
-    implementation 'com.hbb20:ccp:2.5.0'                                        //seleccionador de código telefónico de cada pais
-                                                                              //implementacion de Firebase
-    implementation 'com.google.firebase:firebase-firestore:21.5.0'
+    implementation 'io.github.florent37:shapeofview:1.4.7'                     //formas personalizadas
+    implementation 'com.hbb20:ccp:2.5.0'                                       //seleccionador de código telefónico de cada pais
+
+    implementation 'com.google.firebase:firebase-firestore:21.5.0'            //implementacion de Firebase Store
     implementation 'com.google.firebase:firebase-auth:19.3.2'                 //implementacion de Firebase Authentication
+    implementation 'de.hdodenhof:circleimageview:3.1.0'                       //implementacion de imagen circular, para la imagen de perfil
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

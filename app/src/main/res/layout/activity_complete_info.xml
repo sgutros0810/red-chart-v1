@@ -6,10 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".activities.CompleteInfoActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <io.github.florent37.shapeofview.shapes.ArcView
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                app:shape_arc_position="bottom"
+                app:shape_arc_height="20dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryLigthmarron" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="COMPLETA TU INFORMACIÓN"
+                    android:textSize="23dp"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="50dp"/>
+
+            </io.github.florent37.shapeofview.shapes.ArcView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="100dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/person_pin"
+                    android:layout_marginRight="10dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre de usuario" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_perfil_person"
+        app:civ_circle_background_color="@color/white"
+        app:civ_border_color="@color/colorGray"
+        app:civ_border_width="4dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="90dp" />
+
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="COMPLETADO"
-        android:layout_gravity="center"/>
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/colorPrimaryLigthmarron"
+        android:text="Confirmar"
+        android:layout_gravity="bottom"
+        android:textColor="@color/white"
+        android:layout_margin="20dp" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+
