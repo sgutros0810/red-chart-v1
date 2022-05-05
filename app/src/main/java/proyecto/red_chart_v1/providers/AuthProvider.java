@@ -31,4 +31,17 @@ public class AuthProvider {
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
         return mAuth.signInWithCredential(credential);
     }
+
+    //Método que retorna en la sesion del usuario el UID del usuario de firebase auth
+    public String getId(){
+
+        //Si hay sesion devuelve el UID
+        if (mAuth.getCurrentUser() != null) {
+            return mAuth.getCurrentUser().getUid();
+
+        //No devuelve nada
+        } else {
+            return null;
+        }
+    }
 }

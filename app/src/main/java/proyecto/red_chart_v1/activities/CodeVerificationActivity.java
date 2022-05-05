@@ -3,6 +3,7 @@ package proyecto.red_chart_v1.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -19,7 +21,9 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
+import proyecto.red_chart_v1.providers.UsersProvider;
 
 public class CodeVerificationActivity extends AppCompatActivity {
 
@@ -30,7 +34,9 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
     String mExtraPhone;
     String mVerificationId;
+
     AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,10 @@ public class CodeVerificationActivity extends AppCompatActivity {
 
 
         mAuthProvider = new AuthProvider();
+        mUsersProvider = new UsersProvider();
+
         mExtraPhone = getIntent().getStringExtra("phone"); // recoge el valor introducido del mainActivity
+
 
         mAuthProvider.sendCodeAuth(mExtraPhone, mCallbacks);
 
@@ -104,11 +113,30 @@ public class CodeVerificationActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(CodeVerificationActivity.this, "La autenticación fue exitosa", Toast.LENGTH_LONG).show();
+                    User user = new User();
+                    user.setId(mAuthProvider.getId());  //Recoge el UID del usuario
+                    user.setPhone(mExtraPhone);         //Recoge el teléfono del usuario
+
+                    //Crea el usuario
+                    mUsersProvider.create(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            goToCompleteInfo();
+                        }
+                    });
+
+
                 } else {
                     Toast.makeText(CodeVerificationActivity.this,"No se puedo autenticar el usuario", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    //Método que pasa a la actividad 'CompleteInfoActivity'
+    private void goToCompleteInfo() {
+        Intent intent = new Intent(CodeVerificationActivity.this, CompleteInfoActivity.class);
+        startActivity(intent);
+
     }
 }
