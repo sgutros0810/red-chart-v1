@@ -34,14 +34,18 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.google.android.material:material:1.1.0'
+
     implementation 'io.github.florent37:shapeofview:1.4.7'                   // formas personalizadas
     implementation 'com.hbb20:ccp:2.5.0'                                     // seleccionador de código telefónico de cada pais
-
-
-    implementation 'com.google.firebase:firebase-firestore:21.5.0'           // implementacion de Firebase Store
-    implementation 'com.google.firebase:firebase-auth:19.3.2'                // implementacion de Firebase Authentication
     implementation 'de.hdodenhof:circleimageview:3.1.0'                      // implementacion de imagen circular, para la imagen de perfil
     implementation 'com.fxn769:pix:1.5.3'                                    // implementacion de réplica del selector de imágenes de WhatsApp
+    implementation 'id.zelory:compressor:2.1.1'                              // implementacion de librería que comprime las imagenes
+
+    implementation 'com.google.firebase:firebase-storage:19.1.1'            // implementacion de Firebase Store
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
+    implementation 'com.google.firebase:firebase-firestore:24.1.2'
+// implementacion de Firebase Authentication
+//    implementation 'com.google.firebase:firebase-firestore:24.1.2'
 
 
 

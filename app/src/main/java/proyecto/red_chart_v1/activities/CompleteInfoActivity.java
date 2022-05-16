@@ -1,5 +1,6 @@
 package proyecto.red_chart_v1.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +17,11 @@ import android.widget.Toast;
 import com.fxn.pix.Options;
 import com.fxn.pix.Pix;
 import com.fxn.utility.PermUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
+import proyecto.red_chart_v1.providers.ImageProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
 
 public class CompleteInfoActivity extends AppCompatActivity {
@@ -35,23 +41,26 @@ public class CompleteInfoActivity extends AppCompatActivity {
 
     UsersProvider mUserProvider;
     AuthProvider mAuthProvider;
+    ImageProvider mImageProvider;
 
     Options mOptions;
 
     ArrayList<String> mReturnValue = new ArrayList<>();
     File mImageFile;
+    String mUsername = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complete_info);
 
-        mTextInputUsername = findViewById(R.id.textInputUsername);
-        mButtonConfirm = findViewById(R.id.btnConfirm);
-        mCircleImagePhoto = findViewById(R.id.circleImagePhoto);
+        mTextInputUsername  = findViewById(R.id.textInputUsername);
+        mButtonConfirm      = findViewById(R.id.btnConfirm);
+        mCircleImagePhoto   = findViewById(R.id.circleImagePhoto);
 
-        mUserProvider = new UsersProvider();
-        mAuthProvider = new AuthProvider();
+        mUserProvider       = new UsersProvider();
+        mAuthProvider       = new AuthProvider();
+        mImageProvider      = new ImageProvider();
 
         mOptions = Options.init()
                 .setRequestCode(100)                                          //Request code for activity results
@@ -60,7 +69,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
                 .setPreSelectedUrls(mReturnValue)                             //Pre selected Image Urls
                 .setExcludeVideos(true)                                       //No permite videos
                 .setVideoDurationLimitinSeconds(0)                            //Duracion del video
-                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)    //Orientacion vertical
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_LANDSCAPE)    //Orientacion vertical
                 .setPath("/pix/images");
 
 
@@ -68,7 +77,14 @@ public class CompleteInfoActivity extends AppCompatActivity {
         mButtonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateUserInfo();
+                mUsername = mTextInputUsername.getText().toString();  //nombre de usuario que introduce el usuario
+
+                //Validación de que no este vacio el usuario y el suario seleccione una imagen
+                if(!mUsername.equals("") && mUsername!= null) {
+                    saveImage();      //Primero guardamos la imagen
+                } else {
+                    Toast.makeText(CompleteInfoActivity.this, "Seleccione una imagen y/o ingrese su nombre de usuario", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -87,22 +103,48 @@ public class CompleteInfoActivity extends AppCompatActivity {
     }
 
     //Método que envia a la base de datos la imagen de perfil y el nombre de usuario
-    private void updateUserInfo() {
-        String username = mTextInputUsername.getText().toString();  //nombre de usuario que introduce el usuario
+    private void updateUserInfo(String url) {
+        mUsername = mTextInputUsername.getText().toString();  //nombre de usuario que introduce el usuario
 
         //Si no esta vacio el nombre de usuario
-        if(!username.equals("")) {
+        if(!mUsername.equals("")) {
             //Creamos el usuario
             User user = new User();
-            user.setUsername(username);
+            user.setUsername(mUsername);
             user.setId(mAuthProvider.getId());       //Con el UID del usuario, hacemos que se actualice.
+            user.setImage(url);
             mUserProvider.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                //Cuando termina de actualizarse correctamente
                 @Override
                 public void onSuccess(Void unused) {
                     Toast.makeText(CompleteInfoActivity.this, "La información se ha actualizado", Toast.LENGTH_SHORT).show();
                 }
             });
         }
+    }
+    //Método que guarda la imagen de perfil del usuario
+    private void saveImage() {
+
+        mImageProvider.save(CompleteInfoActivity.this, mImageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                //Si se almacena la imagen correctamente
+                if(task.isSuccessful()){
+                    mImageProvider.getDownloadUri().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            //Después de conseguir la url, se lo pasamos para actualizar en la base de datos
+                            updateUserInfo(url);
+                        }
+                    });
+                } else {
+                    Toast.makeText(CompleteInfoActivity.this, "No se pudo guardar la imagen", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     //Recibe las imagenes que el usuario selecciono y la guarda
