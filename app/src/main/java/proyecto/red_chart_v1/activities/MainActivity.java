@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.hbb20.CountryCodePicker;
 
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.providers.AuthProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     Button mButtonOnSendCode;
     EditText mEditTextPhone;
     CountryCodePicker mCountryCodePicker;
+
+    AuthProvider mAuthProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         mEditTextPhone = findViewById(R.id.editTextPhone);
         mCountryCodePicker = findViewById(R.id.ccp);
 
+        mAuthProvider = new AuthProvider();
 
         mButtonOnSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
                 getData();
             }
         });
+    }
+
+    //Validación para saber si el usuario ya se ha autenticado
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Si el usuario se ha autenticado
+        if(mAuthProvider.getSessionUser() != null){
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);                                   // Dirige a HomeActivity
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);                                  // Borra el historial de pantallas
+            startActivity(intent);
+        }
 
     }
 
