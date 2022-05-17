@@ -153,7 +153,7 @@ public class CodeVerificationActivity extends AppCompatActivity {
     //Método que pasa a la actividad 'CompleteInfoActivity'
     private void goToCompleteInfo() {
         Intent intent = new Intent(CodeVerificationActivity.this, CompleteInfoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);                                           // Borra el historial de pantallas
         startActivity(intent);
-
     }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -49,6 +50,8 @@ public class CompleteInfoActivity extends AppCompatActivity {
     File mImageFile;
     String mUsername = "";
 
+    ProgressDialog mDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,11 @@ public class CompleteInfoActivity extends AppCompatActivity {
         mUserProvider       = new UsersProvider();
         mAuthProvider       = new AuthProvider();
         mImageProvider      = new ImageProvider();
+
+        mDialog = new ProgressDialog(CompleteInfoActivity.this);        //Progress Dialog
+        mDialog.setTitle("Espere un momento");                                  // Mensaje del progress
+        mDialog.setMessage("Guardando información");
+
 
         mOptions = Options.init()
                 .setRequestCode(100)                                          //Request code for activity results
@@ -106,26 +114,35 @@ public class CompleteInfoActivity extends AppCompatActivity {
     private void updateUserInfo(String url) {
         mUsername = mTextInputUsername.getText().toString();  //nombre de usuario que introduce el usuario
 
-        //Si no esta vacio el nombre de usuario
-        if(!mUsername.equals("")) {
-            //Creamos el usuario
-            User user = new User();
-            user.setUsername(mUsername);
-            user.setId(mAuthProvider.getId());       //Con el UID del usuario, hacemos que se actualice.
-            user.setImage(url);
-            mUserProvider.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+        //Creamos el usuario
+        User user = new User();
+        user.setUsername(mUsername);
+        user.setId(mAuthProvider.getId());       //Con el UID del usuario, hacemos que se actualice.
+        user.setImage(url);
+        mUserProvider.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
 
-                //Cuando termina de actualizarse correctamente
-                @Override
-                public void onSuccess(Void unused) {
-                    Toast.makeText(CompleteInfoActivity.this, "La información se ha actualizado", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            //Cuando termina de actualizarse correctamente
+            @Override
+            public void onSuccess(Void unused) {
+                goToHomeActivity();
+            }
+        });
+
     }
-    //Método que guarda la imagen de perfil del usuario
-    private void saveImage() {
 
+    // Metodo que dirige a HomeActivity
+    private void goToHomeActivity() {
+        mDialog.dismiss();                                                                                                          // Ocultar el progress dialog
+        Toast.makeText(CompleteInfoActivity.this, "La información se ha actualizado", Toast.LENGTH_SHORT).show();      // Mensaje
+
+        Intent intent = new Intent(CompleteInfoActivity.this, HomeActivity.class);                                   // Dirige a HomeActivity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);                                           // Borra el historial de pantallas
+        startActivity(intent);
+    }
+
+    // Método que guarda la imagen de perfil del usuario
+    private void saveImage() {
+        mDialog.show();     // Mostrar el progress dialog
         mImageProvider.save(CompleteInfoActivity.this, mImageFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -140,6 +157,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
                         }
                     });
                 } else {
+                    mDialog.dismiss();      // Ocultar el progress dialog
                     Toast.makeText(CompleteInfoActivity.this, "No se pudo guardar la imagen", Toast.LENGTH_SHORT).show();
                 }
 
