@@ -51,4 +51,9 @@ public class AuthProvider {
         return mAuth.getCurrentUser();
     }
 
+    // Método que hace cerrar sesion del usuario
+    public void signOut(){
+        mAuth.signOut();
+    }
+
 }
