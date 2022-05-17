@@ -132,22 +132,43 @@ public class CodeVerificationActivity extends AppCompatActivity {
                                         goToCompleteInfo();
                                     }
                                 });
-                            //Si existe nos dirige a la actividad
-                            } else {
-                                goToCompleteInfo();
-                            }
 
+                            // Si ya existe en la base de datos de ese usuario un nombre de usuario y una imagen
+                            } else if(documentSnapshot.contains("username") && documentSnapshot.contains("image")) {
+                                String username = documentSnapshot.getString("username");       // Recupera el nombre del usuario
+                                String image = documentSnapshot.getString("image");             // Recupera la imagen de perfil del usuario
+
+                                // Diferente de null
+                                if(username != null && image != null) {
+                                    // Si el nombre de usuario y la imagen no esta vacio
+                                    if(!username.equals("") && !image.equals("")){
+                                        // Entonces, el usuario habia agregado anteriormente una imagen y un nombre de usuario
+                                        goToHomeActivity();
+
+                                    // No tiene en la base de datos información guardada
+                                    } else {
+                                        goToCompleteInfo();     // Nos dirige a la actividad
+                                    }
+
+                                // No tiene informacion guardada
+                                } else {
+                                    goToCompleteInfo();     // Nos dirige a la actividad
+                                }
+                            }
                         }
                     });
-
-
-
-
                 } else {
                     Toast.makeText(CodeVerificationActivity.this,"No se puedo autenticar el usuario", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    // Metodo que dirige a HomeActivity
+    private void goToHomeActivity() {
+        Intent intent = new Intent(CodeVerificationActivity.this, HomeActivity.class);                                   // Dirige a HomeActivity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);                                           // Borra el historial de pantallas
+        startActivity(intent);
     }
 
     //Método que pasa a la actividad 'CompleteInfoActivity'
