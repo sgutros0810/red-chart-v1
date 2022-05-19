@@ -29,7 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     ContactsFragment mContactsFragment;     // Fragmento de Contactos
     CameraFragment mCameraFragment;         // Fragmento de Cámara
 
-
+    int mTabSelected = 1;                   // el tab de CHATS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         adapter.addFragment(mContactsFragment, "CONTACTOS" );
         mViewPager.setAdapter(adapter);                                                     // Lo añade
         mTabLayout.setupWithViewPager(mViewPager);
-
+        mViewPager.setCurrentItem(mTabSelected);                                            // Cuando se abre la aplicacion, se abre por defecto en el tab seleccionado
 
         setupTabIcom();
 
