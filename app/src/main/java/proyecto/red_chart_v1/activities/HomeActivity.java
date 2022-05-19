@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.material.tabs.TabLayout;
 
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.adapters.ViewPagerAdapter;
+import proyecto.red_chart_v1.fragments.CameraFragment;
 import proyecto.red_chart_v1.fragments.ChatsFragment;
 import proyecto.red_chart_v1.fragments.ContactsFragment;
 import proyecto.red_chart_v1.providers.AuthProvider;
@@ -25,6 +27,9 @@ public class HomeActivity extends AppCompatActivity {
 
     ChatsFragment mChatsFragment;           // Fragmento de Chats
     ContactsFragment mContactsFragment;     // Fragmento de Contactos
+    CameraFragment mCameraFragment;         // Fragmento de Cámara
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +48,17 @@ public class HomeActivity extends AppCompatActivity {
         // Instacia de fragmetos
         mChatsFragment = new ChatsFragment();
         mContactsFragment = new ContactsFragment();
+        mCameraFragment = new CameraFragment();
 
         // Añade los fragmentos en el adapter (Fragmento, titulo)
+        adapter.addFragment(mCameraFragment, "");
         adapter.addFragment(mChatsFragment, "CHATS" );
         adapter.addFragment(mContactsFragment, "CONTACTOS" );
-        mViewPager.setAdapter(adapter);                                                     //Lo añade
+        mViewPager.setAdapter(adapter);                                                     // Lo añade
         mTabLayout.setupWithViewPager(mViewPager);
 
 
+        setupTabIcom();
 
         mAuthProvider = new AuthProvider();
 
@@ -61,6 +69,18 @@ public class HomeActivity extends AppCompatActivity {
                 signOut();
             }
         });
+    }
+
+    // Método que establece el icono en la posicion 0
+    private void setupTabIcom() {
+        // En el primer elemento, importamos el icono de la camara
+        mTabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
+
+        //Creamos un LinearLayout
+        LinearLayout linearLayout = ((LinearLayout) ((LinearLayout) mTabLayout.getChildAt(0)).getChildAt(0));
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
+        layoutParams.weight = 0.5f;     // Ancho
+        linearLayout.setLayoutParams(layoutParams);
     }
 
     // Método que cierra sesión
