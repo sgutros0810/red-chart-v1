@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">red-chart</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contacts_fragment">CONTACTS FRAGMENT</string>
+    <string name="chats_fragments">CHATS FRAGMENTS</string>
 </resources>
