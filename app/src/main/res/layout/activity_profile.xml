@@ -6,12 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.ProfileActivity">
 
+    <include layout="@layout/action_bar_tool" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp">
+        android:layout_marginRight="30dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -72,8 +72,6 @@ public class HomeActivity extends AppCompatActivity {
 
         mAuthProvider = new AuthProvider();
 
-        // Cuando pulsa cierra sesion
-
     }
 
     //Opciones del menu
@@ -89,8 +87,11 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
             //Cierra la session del usuario
-            case R.id.cerrarSesion:
+            case R.id.itemCerrarSesion:
                 signOut();
+                return true;
+            case R.id.itemPerfil:
+                goToProfile();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -117,6 +118,12 @@ public class HomeActivity extends AppCompatActivity {
         mAuthProvider.signOut();
         Intent intent = new Intent(HomeActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);                                           // Borra el historial de pantallas
+        startActivity(intent);
+    }
+
+    // Método que lleva al Perfil del usuario
+    private void goToProfile() {
+        Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
         startActivity(intent);
     }
 
