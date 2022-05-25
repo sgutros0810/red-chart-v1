@@ -10,6 +10,7 @@ import java.util.Map;
 
 import proyecto.red_chart_v1.models.User;
 
+//Clase que maneja los datos de Firebase
 public class UsersProvider {
     private CollectionReference mCollection;
 
@@ -26,7 +27,7 @@ public class UsersProvider {
 
     //Método que permite almacenar el usuario en la base de datos
     public Task<Void> create (User user) {
-        //Retorna el id del usuario a la colección
+        //Retorna la informacion del usuario por Id a la colección
         return mCollection.document(user.getId()).set(user);
     }
 
@@ -35,6 +36,7 @@ public class UsersProvider {
         Map<String, Object> map = new HashMap<>();
         map.put("username", user.getUsername());
         map.put("image", user.getImage());
+
         return mCollection.document(user.getId()).update(map);
     }
 
