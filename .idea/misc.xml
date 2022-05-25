@@ -3,10 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/ic_option_white.xml" value="0.1" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/rounded_button.xml" value="0.1995" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_code_verification.xml" value="0.33" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_complete_info.xml" value="0.22" />
-        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_home.xml" value="0.1" />
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_home.xml" value="0.15" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/activity_profile.xml" value="0.33" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/fragment_camera.xml" value="0.1" />
@@ -14,6 +15,8 @@
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/fragment_contacs.xml" value="0.1" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/fragment_contacts.xml" value="0.3020833333333333" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/menu.xml" value="0.1" />
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/toolbar.xml" value="0.1691995947315096" />
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/menu/menu.xml" value="0.21787709497206703" />
       </map>
     </option>
   </component>

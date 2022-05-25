@@ -1,10 +1,14 @@
 package proyecto.red_chart_v1.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,6 +26,8 @@ public class HomeActivity extends AppCompatActivity {
     Button mButtonSignOut;
     AuthProvider mAuthProvider;
 
+    Toolbar mToolBar;
+    MenuItem item;
     TabLayout mTabLayout;
     ViewPager mViewPager;
 
@@ -36,9 +42,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mButtonSignOut = findViewById(R.id.btnSignOut);
+
         mTabLayout = findViewById(R.id.tabLayout);
         mViewPager = findViewById(R.id.viewPager);
+        mToolBar = (Toolbar) findViewById(R.id.toolBar);
+
+        // -- ToolBar --
+        setSupportActionBar(mToolBar);
 
 
         // --- FRAGMENTOS --- //
@@ -63,12 +73,31 @@ public class HomeActivity extends AppCompatActivity {
         mAuthProvider = new AuthProvider();
 
         // Cuando pulsa cierra sesion
-        mButtonSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+    }
+
+    //Opciones del menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    //Boton de mas opciones
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch (item.getItemId()) {
+            //Cierra la session del usuario
+            case R.id.cerrarSesion:
                 signOut();
-            }
-        });
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     // Método que establece el icono en la posicion 0
