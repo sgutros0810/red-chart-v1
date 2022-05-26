@@ -16,10 +16,12 @@ import proyecto.red_chart_v1.utils.CompressorBitmapImage;
 public class ImageProvider {
 
     StorageReference mStorage;
+    FirebaseStorage mFirebaseStorage;
 
-    // Contructor vacio
+    // Contructor vacio con instacias
     public ImageProvider() {
-        mStorage = FirebaseStorage.getInstance().getReference();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mStorage = mFirebaseStorage.getReference();
     }
 
     public UploadTask save(Context context, File file) {
@@ -33,6 +35,11 @@ public class ImageProvider {
     // Retorna la url de la imagem
     public Task<Uri> getDownloadUri(){
         return mStorage.getDownloadUrl();
+    }
+
+    //Eliminar la imagen atraves de la url
+    public  Task<Void> delete(String url) {
+        return mFirebaseStorage.getReferenceFromUrl(url).delete();
     }
 
 }

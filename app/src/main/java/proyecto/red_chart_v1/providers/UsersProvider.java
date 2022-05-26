@@ -12,6 +12,7 @@ import proyecto.red_chart_v1.models.User;
 
 //Clase que maneja los datos de Firebase
 public class UsersProvider {
+
     private CollectionReference mCollection;
 
     //Constructor
@@ -38,6 +39,13 @@ public class UsersProvider {
         map.put("image", user.getImage());
 
         return mCollection.document(user.getId()).update(map);
+    }
+
+    //Método que Elimina el campo 'image' del usuario de la base de datos
+    public Task<Void> deleteImage(String id){
+        Map<String, Object> map = new HashMap<>();
+        map.put("image", null);
+        return mCollection.document(id).update(map);
     }
 
 }

@@ -13,6 +13,7 @@ import proyecto.red_chart_v1.utils.MyToolBarSimple;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,6 +33,8 @@ public class ProfileActivity extends AppCompatActivity {
     //TextView mTextViewStatus;
     TextView mTextViewPhone;
     CircleImageView mCircleImageProfile;
+
+    User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +71,17 @@ public class ProfileActivity extends AppCompatActivity {
                 //Si el documento(UID) existe en la base de datos
                 if(documentSnapshot.exists()){
                    //Recogemos los datos de la base de datos en model/User
-                    User user = documentSnapshot.toObject(User.class);
+                    mUser = documentSnapshot.toObject(User.class);
 
                     //Establecemos los valores a los TextView
-                    mTextViewUsername.setText(user.getUsername());
-                    mTextViewPhone.setText(user.getPhone());
+                    mTextViewUsername.setText(mUser.getUsername());
+                    mTextViewPhone.setText(mUser.getPhone());
 
                     //Validación de que la imagen no se encuentre vacia ni null
-                    if(user.getImage() != null) {
-                        if(!user.getImage().equals("")) {
+                    if(mUser.getImage() != null) {
+                        if(!mUser.getImage().equals("")) {
                             //Libreria que muestra la imagen a nuestra aplicacion mediante una url
-                            Picasso.get().load(user.getImage()).into(mCircleImageProfile);
+                            Picasso.get().load(mUser.getImage()).into(mCircleImageProfile);
                         }
                     }
 
@@ -89,8 +92,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Muestra el bottom Sheet
     private void openBottomSheetSelectImage() {
-        mBottomSheetSelectImage = BottomSheetSelectImage.newInstance();
-        mBottomSheetSelectImage.show(getSupportFragmentManager(), mBottomSheetSelectImage.getTag());
-
+        //Validacion de que usuario no sea null
+        if(mUser != null){
+            mBottomSheetSelectImage = BottomSheetSelectImage.newInstance(mUser.getImage());
+            mBottomSheetSelectImage.show(getSupportFragmentManager(), mBottomSheetSelectImage.getTag());
+        } else {
+            Toast.makeText(this, "La informacion no se ha podido cargar", Toast.LENGTH_LONG).show();
+        }
     }
 }
