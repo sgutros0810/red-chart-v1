@@ -40,6 +40,8 @@ dependencies {
     implementation 'com.fxn769:pix:1.5.3'                                    // implementacion de réplica del selector de imágenes de WhatsApp
     implementation 'id.zelory:compressor:2.1.1'                              // implementacion de librería que comprime las imagenes
     implementation 'com.github.rahimlis:badgedtablayout:v1.2'                // implementacion de los tabs
+    implementation 'com.squareup.picasso:picasso:2.71828'                        // implementacion que muestra la imagen a nuestra aplicacion mediante la url de la bd
+
    // implementation 'com.miguelcatalan:materialsearchview:1.4.0'               // implementacion de Search bar
 
     implementation 'com.google.firebase:firebase-storage:19.1.1'            // implementacion de Firebase Store

@@ -21,6 +21,7 @@
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleImageProfile"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:src="@drawable/ic_person_white"
@@ -66,6 +67,7 @@
                 />
 
                 <TextView
+                    android:id="@+id/textViewUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre de usuario"
@@ -134,6 +136,7 @@
                 />
 
                 <TextView
+                    android:id="@+id/textViewStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hey there i using Red-Chat"
@@ -190,6 +193,7 @@
                 />
 
                 <TextView
+                    android:id="@+id/textViewPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="+34 623293222"
