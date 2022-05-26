@@ -100,4 +100,10 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "La informacion no se ha podido cargar", Toast.LENGTH_LONG).show();
         }
     }
+
+    //imagen de perfil por defecto
+    public void setImageDefault(){
+        mCircleImageProfile.setImageResource(R.drawable.ic_person_white);
+    }
+
 }

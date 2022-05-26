@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.activities.ProfileActivity;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ImageProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
@@ -79,6 +80,7 @@ public class BottomSheetSelectImage extends BottomSheetDialogFragment {
                         public void onComplete(@NonNull Task<Void> task2) {
                             //Si se completo
                             if(task2.isSuccessful()){
+                                setImageDefault();
                                 Toast.makeText(getContext(), "La imagen se eliminó correctamente", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getContext(), "No se puedo eliminar el dato de la imagen", Toast.LENGTH_LONG).show();
@@ -92,5 +94,10 @@ public class BottomSheetSelectImage extends BottomSheetDialogFragment {
                 }
             }
         });
+    }
+
+    //Muestra la imagen de perfil por defecto
+    private void setImageDefault() {
+        ((ProfileActivity)getActivity()).setImageDefault();
     }
 }
