@@ -41,10 +41,10 @@ public class UsersProvider {
         return mCollection.document(user.getId()).update(map);
     }
 
-    //Método que Elimina el campo 'image' del usuario de la base de datos
-    public Task<Void> deleteImage(String id){
+    //Método que Actualiza el campo 'image' del usuario de la base de datos
+    public Task<Void> updateImage(String id, String url){
         Map<String, Object> map = new HashMap<>();
-        map.put("image", null);
+        map.put("image", url);
         return mCollection.document(id).update(map);
     }
 

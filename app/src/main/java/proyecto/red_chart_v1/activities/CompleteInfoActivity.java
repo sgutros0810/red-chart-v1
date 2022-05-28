@@ -106,6 +106,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
         });
     }
 
+    //Inicializa la libreria de réplica del selector de imágenes de WhatsApp
     private void startPix() {
         Pix.start(CompleteInfoActivity.this, mOptions);
     }
@@ -176,7 +177,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
         }
     }
 
-    //Seleccion de Permisos
+    //Seleccion de Permisos de camara y galeria
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
