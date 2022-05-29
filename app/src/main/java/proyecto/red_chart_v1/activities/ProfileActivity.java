@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.fragments.BottomSheetSelectImage;
+import proyecto.red_chart_v1.fragments.BottomSheetUsername;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ImageProvider;
@@ -19,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,15 +43,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     FloatingActionButton mFabSelectImage;
     BottomSheetSelectImage mBottomSheetSelectImage;
+    BottomSheetUsername mBottomSheetUsername;
 
     UsersProvider mUsersProvider;
     AuthProvider mAuthProvider;
     ImageProvider mImageProvider;
 
     TextView mTextViewUsername;
-    //TextView mTextViewStatus;
     TextView mTextViewPhone;
     CircleImageView mCircleImageProfile;
+    ImageView mImageViewEditUsername;
 
     User mUser;
 
@@ -70,9 +73,9 @@ public class ProfileActivity extends AppCompatActivity {
         mAuthProvider = new AuthProvider();
 
         mTextViewUsername = findViewById(R.id.textViewUsername);
-        //mTextViewStatus = findViewById(R.id.textViewStatus);
         mTextViewPhone = findViewById(R.id.textViewPhone);
         mCircleImageProfile = findViewById(R.id.circleImageProfile);
+        mImageViewEditUsername = findViewById(R.id.imageViewEditUsername);
 
 
         mOptions = Options.init()
@@ -91,6 +94,15 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openBottomSheetSelectImage();
+            }
+        });
+
+        // si pincha sobre el imageViewEditUsername
+        mImageViewEditUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Abre el Bottom Sheet
+                openBottomSheetUsername();
             }
         });
 
@@ -124,7 +136,19 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Muestra el bottom Sheet
+    // Muestra el bottom Sheet de nombre de usuario
+    private void openBottomSheetUsername() {
+        //Validacion de que usuario no sea null
+        if(mUser != null){
+            mBottomSheetUsername = BottomSheetUsername.newInstance(mUser.getUsername());
+            mBottomSheetUsername.show(getSupportFragmentManager(), mBottomSheetUsername.getTag());
+        } else {
+            Toast.makeText(this, "La informacion no se ha podido cargar", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    // Muestra el bottom Sheet de la imagen
     private void openBottomSheetSelectImage() {
         //Validacion de que usuario no sea null
         if(mUser != null){

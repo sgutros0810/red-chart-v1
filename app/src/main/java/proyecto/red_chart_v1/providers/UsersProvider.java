@@ -48,4 +48,11 @@ public class UsersProvider {
         return mCollection.document(id).update(map);
     }
 
+    //Método que Actualiza el campo 'username' del usuario de la base de datos
+    public Task<Void> updateUsername(String id, String username){
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        return mCollection.document(id).update(map);
+    }
+
 }

@@ -85,6 +85,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/imageViewEditUsername"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_edit_gray"
