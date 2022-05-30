@@ -1,6 +1,7 @@
 package proyecto.red_chart_v1.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -32,6 +33,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
@@ -60,6 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     ArrayList<String> mReturnValue = new ArrayList<>();
     File mImageFile;
+
+    ListenerRegistration mListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,31 +115,54 @@ public class ProfileActivity extends AppCompatActivity {
         getUserInfo();
     }
 
+    //Metodo que deja de escuchar los eventos en tiempo real de Firebase
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mListener != null) {
+            mListener.remove();
+        }
+
+    }
+
     //Metodo que devuelve la informacion del usuario
     private void getUserInfo() {
-        mUsersProvider.getUserInfo(mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        //con 'addSnapshotListener', muestra la informacion del usuario en tiempo real de la bd
+        mListener = mUsersProvider.getUserInfo(mAuthProvider.getId()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                //Si el documento(UID) existe en la base de datos
-                if(documentSnapshot.exists()){
-                   //Recogemos los datos de la base de datos en model/User
-                    mUser = documentSnapshot.toObject(User.class);
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
 
-                    //Establecemos los valores a los TextView
-                    mTextViewUsername.setText(mUser.getUsername());
-                    mTextViewPhone.setText(mUser.getPhone());
+                if(documentSnapshot != null){
+                    //Si el documento(UID) existe en la base de datos
+                    if(documentSnapshot.exists()){
+                        //Recogemos los datos de la base de datos en model/User
+                        mUser = documentSnapshot.toObject(User.class);
 
-                    //Validación de que la imagen no se encuentre vacia ni null
-                    if(mUser.getImage() != null) {
-                        if(!mUser.getImage().equals("")) {
-                            //Libreria que muestra la imagen a nuestra aplicacion mediante una url
-                            Picasso.get().load(mUser.getImage()).into(mCircleImageProfile);
+                        //Establecemos los valores a los TextView
+                        mTextViewUsername.setText(mUser.getUsername());
+                        mTextViewPhone.setText(mUser.getPhone());
+
+                        //Validación de que la imagen no este null
+                        if(mUser.getImage() != null) {
+                            //Validación de que la url de la imagen no se encuentre vacia
+                            if(!mUser.getImage().equals("")) {
+                                //Libreria que muestra la imagen a nuestra aplicacion mediante una url
+                                Picasso.get().load(mUser.getImage()).into(mCircleImageProfile);
+
+                            //En caso de que la url de la imagen este vacia, muestra una imagen por defecto
+                            } else {
+                                setImageDefault();
+                            }
+
+                        //Si la imagen se encuentra null, muestra una imagen por defecto
+                        } else {
+                            setImageDefault();
                         }
                     }
-
                 }
             }
         });
+        //Eliminar el evento 'addSnapshotListener', para que no se llame siempre
     }
 
     // Muestra el bottom Sheet de nombre de usuario
