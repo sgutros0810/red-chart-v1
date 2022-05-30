@@ -5,22 +5,24 @@ public class User {
     private String id;          // Id del usuario
     private String username;    // Nombre del usuario
     private String phone;       // Teléfono del usuario
-    private String image;       // Imagen de perfil del usuario
+    private String image;       // Imagen de perfil del
+    private String info;
 
     // Contructor vacío
     public User() {
 
     }
 
-    // Contructor con 4 parámetros
-    public User(String id, String username, String phone, String image) {
+    // Contructor con todas las variables
+    public User(String id, String username, String phone, String image, String info) {
         this.id = id;
         this.username = username;
         this.phone = phone;
         this.image = image;
+        this.info = info;
     }
 
-    //Getters y setters
+    // Getters y Setters
     public String getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

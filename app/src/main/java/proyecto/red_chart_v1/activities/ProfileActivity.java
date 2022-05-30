@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.fragments.BottomSheetInfo;
 import proyecto.red_chart_v1.fragments.BottomSheetSelectImage;
 import proyecto.red_chart_v1.fragments.BottomSheetUsername;
 import proyecto.red_chart_v1.models.User;
@@ -48,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
     FloatingActionButton mFabSelectImage;
     BottomSheetSelectImage mBottomSheetSelectImage;
     BottomSheetUsername mBottomSheetUsername;
+    BottomSheetInfo mBottomSheetInfo;
 
     UsersProvider mUsersProvider;
     AuthProvider mAuthProvider;
@@ -55,8 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView mTextViewUsername;
     TextView mTextViewPhone;
+    TextView mTextViewInfo;
+
     CircleImageView mCircleImageProfile;
     ImageView mImageViewEditUsername;
+    ImageView mImageViewEditInfo;
 
     User mUser;
 
@@ -80,8 +85,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         mTextViewUsername = findViewById(R.id.textViewUsername);
         mTextViewPhone = findViewById(R.id.textViewPhone);
+        mTextViewInfo = findViewById(R.id.textViewInfo);
         mCircleImageProfile = findViewById(R.id.circleImageProfile);
         mImageViewEditUsername = findViewById(R.id.imageViewEditUsername);
+        mImageViewEditInfo = findViewById(R.id.imageViewEditInfo);
 
 
         mOptions = Options.init()
@@ -103,6 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
         // si pincha sobre el imageViewEditUsername
         mImageViewEditUsername.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,18 +120,31 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
+        // si pincha sobre el imageViewEditInfo
+        mImageViewEditInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Abre el Bottom Sheet
+                openBottomSheetInfo();
+            }
+        });
         getUserInfo();
     }
+
+
+
 
     //Metodo que deja de escuchar los eventos en tiempo real de Firebase
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(mListener != null) {
+            //Elimina el evento 'addSnapshotListener', para que no se llame siempre
             mListener.remove();
         }
-
     }
+
 
     //Metodo que devuelve la informacion del usuario
     private void getUserInfo() {
@@ -141,6 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
                         //Establecemos los valores a los TextView
                         mTextViewUsername.setText(mUser.getUsername());
                         mTextViewPhone.setText(mUser.getPhone());
+                        mTextViewInfo.setText(mUser.getInfo());
 
                         //Validación de que la imagen no este null
                         if(mUser.getImage() != null) {
@@ -162,7 +184,18 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
-        //Eliminar el evento 'addSnapshotListener', para que no se llame siempre
+
+    }
+
+    // Muestra el bottom Sheet de nombre de usuario
+    private void openBottomSheetInfo() {
+        //Validacion de que usuario no sea null
+        if(mUser != null){
+            mBottomSheetInfo = BottomSheetInfo.newInstance(mUser.getInfo());
+            mBottomSheetInfo.show(getSupportFragmentManager(), mBottomSheetInfo.getTag());
+        } else {
+            Toast.makeText(this, "La informacion no se ha podido cargar", Toast.LENGTH_LONG).show();
+        }
     }
 
     // Muestra el bottom Sheet de nombre de usuario
@@ -187,6 +220,8 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "La informacion no se ha podido cargar", Toast.LENGTH_LONG).show();
         }
     }
+
+
 
     //imagen de perfil por defecto
     public void setImageDefault(){

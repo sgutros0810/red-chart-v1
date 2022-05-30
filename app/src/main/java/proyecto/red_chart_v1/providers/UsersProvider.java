@@ -55,4 +55,11 @@ public class UsersProvider {
         return mCollection.document(id).update(map);
     }
 
+    //Método que Actualiza el campo 'info', el estado del usuario de la base de datos
+    public Task<Void> updateInfo(String id, String info){
+        Map<String, Object> map = new HashMap<>();
+        map.put("info", info);
+        return mCollection.document(id).update(map);
+    }
+
 }

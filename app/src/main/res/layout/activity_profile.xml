@@ -137,7 +137,7 @@
                 />
 
                 <TextView
-                    android:id="@+id/textViewStatus"
+                    android:id="@+id/textViewInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hey there i using Red-Chat"
@@ -148,10 +148,10 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/imageViewEditInfo"
                 android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_edit_gray"
-            />
+                android:layout_height="24dp"
+                android:src="@drawable/ic_edit_gray" />
         </LinearLayout>
 
 
