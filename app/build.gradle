@@ -42,11 +42,13 @@ dependencies {
     implementation 'com.github.rahimlis:badgedtablayout:v1.2'                // implementacion de los tabs
     implementation 'com.squareup.picasso:picasso:2.71828'                    // implementacion que muestra la imagen a nuestra aplicacion mediante la url de la bd
 
-   // implementation 'com.miguelcatalan:materialsearchview:1.4.0'               // implementacion de Search bar
+   // implementation 'com.miguelcatalan:materialsearchview:1.4.0'            // implementacion de Search bar
 
-    implementation 'com.google.firebase:firebase-storage:19.1.1'            // implementacion de Firebase Store
+    implementation 'com.google.firebase:firebase-storage:19.1.1'             // implementacion de Firebase Store
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-firestore:24.1.2'
+
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'               // FirebaseUI for Cloud Firestore
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 

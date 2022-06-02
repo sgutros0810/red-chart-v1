@@ -4,9 +4,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 import proyecto.red_chart_v1.models.User;
 
@@ -24,6 +26,11 @@ public class UsersProvider {
     //Método que verifica si el usuario ya existe mediante el id
     public DocumentReference getUserInfo(String id) {
         return mCollection.document(id);
+    }
+
+    //Método que muestra todos los usuarios por el nombre de usuario
+    public Query getAllUsersByName(){
+        return mCollection.orderBy("username");
     }
 
     //Método que permite almacenar el usuario en la base de datos

@@ -3,64 +3,74 @@ package proyecto.red_chart_v1.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import proyecto.red_chart_v1.R;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ContactsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.adapters.ContactsAdapter;
+import proyecto.red_chart_v1.models.User;
+import proyecto.red_chart_v1.providers.UsersProvider;
+
+
 public class ContactsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    View mView;
+    RecyclerView mRecyclerViewContacts;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    ContactsAdapter mContactsAdapter;
+
+    UsersProvider mUsersProvider;
 
     public ContactsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ContacsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ContactsFragment newInstance(String param1, String param2) {
-        ContactsFragment fragment = new ContactsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    //Se instacia la vista que utilizamos (Fragment de contactos)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contacts, container, false);
+        mView = inflater.inflate(R.layout.fragment_contacts, container, false);
+        mRecyclerViewContacts = mView.findViewById(R.id.recyclerViewContacts);
+        mUsersProvider = new UsersProvider();
+
+        //Se posicionan uno debajo del otro
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerViewContacts.setLayoutManager(linearLayoutManager);
+
+        return mView;
+    }
+
+    //Metodo en ciclo de vida
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Recoge la informacion de la clase UserProviders
+        Query query = mUsersProvider.getAllUsersByName();
+
+        FirestoreRecyclerOptions <User> options = new FirestoreRecyclerOptions.Builder<User>()
+                                                  .setQuery(query, User.class)
+                                                  .build();
+        mContactsAdapter = new ContactsAdapter(options, getContext());
+
+        mRecyclerViewContacts.setAdapter(mContactsAdapter);
+
+        //Cambios en tiempo real que sucede en la bd
+        mContactsAdapter.startListening();
+
+    }
+
+    //Método que para de escuchar los cambios
+    @Override
+    public void onStop() {
+        super.onStop();
+        mContactsAdapter.stopListening();
     }
 }

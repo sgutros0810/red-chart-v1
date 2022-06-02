@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginRight="25dp"
+    android:layout_marginLeft="25dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageUser"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_perfil_person" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp">
+
+        <TextView
+            android:id="@+id/textViewUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del usuario"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/textViewInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado..."
+            android:textSize="14dp"
+            android:maxLines="1"
+            android:layout_marginTop="3dp"/>
+
+
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>
