@@ -23,7 +23,6 @@ import proyecto.red_chart_v1.providers.AuthProvider;
 
 // Clase que recoge los datos de los 'Contactos' de la bd
 public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAdapter.ViewHolder> {
-
     Context context;
     AuthProvider authProvider;
 
@@ -38,7 +37,7 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
     * holder    -> accede a los campos creados en la clase ViewHolder y introduce los datos de la base de datos para mostrarlos
     **/
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull User user) {
+    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final User user) {
         //Si el id del usuario es el mismo que se esta utilizando
         if(user.getId().equals(authProvider.getId())){
             //Ocultar el recyclerView, al usuario propìo
@@ -71,17 +70,21 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
         else {
             holder.circleImageUser.setImageResource(R.drawable.ic_perfil_person);
         }
+
+        //Cuando pulse sobre un usuario, me muestra su chat
         holder.myView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToChatActivity();
+                goToChatActivity(user.getId());
             }
         });
     }
 
-    //Muestra la pantalla del chat del contacto
-    private void goToChatActivity() {
+    //Muestra la pantalla del chat del cusuario con el id
+    private void goToChatActivity(String id) {
         Intent intent = new Intent(context, ChatActivity.class);
+        //Enviamos el id del usuario seleccionado por parametro
+        intent.putExtra("id", id);
         context.startActivity(intent);
     }
 

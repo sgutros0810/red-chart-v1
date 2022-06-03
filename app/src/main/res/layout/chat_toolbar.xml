@@ -39,7 +39,7 @@
         android:layout_below="@id/textViewUsername"
         android:layout_toRightOf="@id/circleImageUser"
         android:maxLines="1"
-        android:text="En línea"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="12dp" />
 
