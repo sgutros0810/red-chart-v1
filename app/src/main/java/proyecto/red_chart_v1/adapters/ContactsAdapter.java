@@ -1,6 +1,7 @@
 package proyecto.red_chart_v1.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.activities.ChatActivity;
 import proyecto.red_chart_v1.models.User;
 
 // Clase que recoge los datos de los 'Contactos' de la bd
@@ -54,6 +56,18 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
         else {
             holder.circleImageUser.setImageResource(R.drawable.ic_perfil_person);
         }
+        holder.myView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToChatActivity();
+            }
+        });
+    }
+
+    //Muestra la pantalla del chat del contacto
+    private void goToChatActivity() {
+        Intent intent = new Intent(context, ChatActivity.class);
+        context.startActivity(intent);
     }
 
     @NonNull
@@ -69,10 +83,12 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
         TextView textViewUsername;
         TextView textViewInfo;
         CircleImageView circleImageUser;
+        View myView;
 
         public ViewHolder(View view){
             //Le estamos pasando el cardview_contacts al view
             super(view);
+            myView=view;        //Representa a cada view -> contacto
 
             //Instaciamos los id del 'cardview_contacts'
             textViewUsername = view.findViewById(R.id.textViewUsername);
