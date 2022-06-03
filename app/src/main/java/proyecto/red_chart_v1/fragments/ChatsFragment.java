@@ -83,4 +83,17 @@ public class ChatsFragment extends Fragment {
         mChatsAdapter.stopListening();
     }
 
+
+    //Método que deja de escuchar los eventos en tiempo real de Firebase
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mChatsAdapter.getListener() != null) {
+            //Elimina el evento 'addSnapshotListener', para que no se llame siempre
+            mChatsAdapter.getListener().remove();
+        }
+    }
+
+
+
 }

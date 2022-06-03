@@ -98,7 +98,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatsProvider.create(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(ChatActivity.this, "El chat se creo correctamente", Toast.LENGTH_LONG);
+                Toast.makeText(ChatActivity.this, "El chat se creo correctamente", Toast.LENGTH_LONG).show();
             }
         });
     }
