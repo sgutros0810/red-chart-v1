@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLigthmarron">
+
+    <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_arrow_back"
+        android:layout_marginTop="7dp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageUser"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_perfil_person"
+        app:civ_circle_background_color="@color/white"
+        android:layout_toRightOf="@id/imageViewBack"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/textViewUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/circleImageUser"
+        android:maxLines="1"
+        android:text="Nombre de usuario"
+        android:textColor="@color/white"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/textViewOnline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewUsername"
+        android:layout_toRightOf="@id/circleImageUser"
+        android:maxLines="1"
+        android:text="En línea"
+        android:textColor="@color/white"
+        android:textSize="12dp" />
+
+
+</RelativeLayout>

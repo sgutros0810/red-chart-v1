@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,16 +19,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.activities.ChatActivity;
 import proyecto.red_chart_v1.models.User;
+import proyecto.red_chart_v1.providers.AuthProvider;
 
 // Clase que recoge los datos de los 'Contactos' de la bd
 public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAdapter.ViewHolder> {
 
     Context context;
+    AuthProvider authProvider;
 
     //Constructor
     public ContactsAdapter (FirestoreRecyclerOptions options, Context context) {
         super(options);
         this.context = context;
+        authProvider = new AuthProvider();
     }
 
     /** Muestra los valores que vienen de la bd en el cardview
@@ -35,6 +39,17 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
     **/
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull User user) {
+        //Si el id del usuario es el mismo que se esta utilizando
+        if(user.getId().equals(authProvider.getId())){
+            //Ocultar el recyclerView, al usuario propìo
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
+            params.height = 0;
+            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            params.topMargin = 0;
+            params.bottomMargin = 0;
+            holder.itemView.setVisibility(View.VISIBLE);
+        }
+
         holder.textViewUsername.setText(user.getUsername());    //Muestra el nombre del contacto
         holder.textViewInfo.setText(user.getInfo());            //Muestra el info del usuario
 
