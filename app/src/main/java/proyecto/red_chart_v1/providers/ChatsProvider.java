@@ -25,6 +25,12 @@ public class ChatsProvider {
         return mCollection.document().set(chat);
     }
 
+
+    public Query getUserChats(String idUser){
+        //Se encuentra n el array el id del usuario lo retorna
+        return mCollection.whereArrayContains("ids",idUser);
+    }
+
     //Método que retorna si existe algun chat con el 'Usuario Principal (User1)' + el otro 'Usuario (User2)'
     public Query getChatByUser1AndUser2 (String idUser1, String idUser2) {
         ArrayList<String> ids = new ArrayList<>();
@@ -33,4 +39,5 @@ public class ChatsProvider {
         //Busca la combinacion en 'Chats' del idUser1 + idsUser2
         return mCollection.whereIn("id", ids);
     }
+
 }

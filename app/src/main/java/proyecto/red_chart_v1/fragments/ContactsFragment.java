@@ -16,6 +16,7 @@ import com.google.firebase.firestore.Query;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.adapters.ContactsAdapter;
 import proyecto.red_chart_v1.models.User;
+import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
 
 
@@ -27,6 +28,7 @@ public class ContactsFragment extends Fragment {
     ContactsAdapter mContactsAdapter;
 
     UsersProvider mUsersProvider;
+    AuthProvider mAuthProvider;
 
     public ContactsFragment() {
         // Required empty public constructor
@@ -39,7 +41,9 @@ public class ContactsFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_contacts, container, false);
         mRecyclerViewContacts = mView.findViewById(R.id.recyclerViewContacts);
+
         mUsersProvider = new UsersProvider();
+        mAuthProvider = new AuthProvider();
 
         //Se posicionan uno debajo del otro
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
