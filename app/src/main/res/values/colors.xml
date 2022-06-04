@@ -13,10 +13,12 @@
     <color name="colorGrayLight">#EAE5E5</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorAccent">#E3CECA</color>
+    <color name="colorMessageSend">#E3CECA</color>
     <color name="colorPrimaryDarkmarron">#732020</color>
     <color name="colorPrimaryLigthmarron">#732020</color>
     <color name="colorOrange">#CF5A0C</color>
     <color name="colorPurple">#62138C</color>
+
 
 
 </resources>

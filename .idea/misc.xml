@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/bubble_corner_left.xml" value="0.3215" />
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/bubble_corner_right.xml" value="0.3215" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/custom_edit_text.xml" value="0.12" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/ic_option_white.xml" value="0.1" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/drawable/rounded_button.xml" value="0.1995" />
@@ -18,6 +20,7 @@
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/bottom_sheet_username.xml" value="0.33" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/cardview_chats.xml" value="0.5" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/cardview_contacts.xml" value="0.1" />
+        <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/cardview_message.xml" value="0.3145833333333333" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/chat_toolbar.xml" value="0.26458333333333334" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/fragment_camera.xml" value="0.1" />
         <entry key="..\:/Users/sofia/Desktop/ProyectoIntegrado/app/src/main/res/layout/fragment_chats.xml" value="0.22" />
