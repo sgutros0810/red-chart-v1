@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:paddingLeft="30dp"
     android:paddingRight="30dp">
 
     <LinearLayout
+        android:id="@+id/linearLayoutMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bubble_corner_left"
         android:paddingLeft="30dp"
+        android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" >
 
         <TextView
+            android:id="@+id/textViewMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nuevo mensaje..."
@@ -29,9 +32,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="right">
+            android:gravity="right"
+            android:layout_marginTop="7dp" >
 
             <TextView
+                android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12:00 A.M"
@@ -39,6 +44,7 @@
                 android:textColor="@color/colorGrayDark" />
 
             <ImageView
+                android:id="@+id/imageViewCheck"
                 android:layout_width="35dp"
                 android:layout_height="15dp"
                 android:src="@drawable/icon_check_double_gris" />

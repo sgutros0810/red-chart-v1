@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +30,8 @@ import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.adapters.ChatsAdapter;
+import proyecto.red_chart_v1.adapters.MessagesAdapter;
 import proyecto.red_chart_v1.models.Chat;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
@@ -50,6 +56,10 @@ public class ChatActivity extends AppCompatActivity {
     CircleImageView mCircleImageView;
     EditText mEditTextMessage;
 
+    MessagesAdapter mAdapter;
+    RecyclerView mRecyclerViewMessages;
+    LinearLayoutManager mLinearLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,10 @@ public class ChatActivity extends AppCompatActivity {
 
         mEditTextMessage = findViewById(R.id.editTextMessage);
         mImageViewSend = findViewById(R.id.imageViewSend);
+        mRecyclerViewMessages = findViewById(R.id.recyclerViewMessages);
+
+        mLinearLayoutManager  = new LinearLayoutManager(ChatActivity.this);
+        mRecyclerViewMessages.setLayoutManager(mLinearLayoutManager);       //Se mostrara un mensaje debajo de otro
 
         //Muestra el toolbar
         showChatToolbar(R.layout.chat_toolbar);
@@ -84,6 +98,23 @@ public class ChatActivity extends AppCompatActivity {
                 createMessage();
             }
         });
+    }
+
+    //Meodos de ciclo de vida de android
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Muestra siempre los mensajes
+        if(mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 
     //Crea el mensaje del usuario1
@@ -106,7 +137,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     mEditTextMessage.setText("");           //Cuando envié el mensaje se borra
-                    Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -128,11 +159,27 @@ public class ChatActivity extends AppCompatActivity {
                         createChat();
                     } else {
                         mExtraidChat = queryDocumentSnapshots.getDocuments().get(0).getId();        //Obtiene el id del chat si viene null
-                        Toast.makeText(ChatActivity.this, "El chat ya existe entre estos dos usuarios", Toast.LENGTH_SHORT).show();
+                        getMessagesByChat();
+                        //Toast.makeText(ChatActivity.this, "El chat ya existe entre estos dos usuarios", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
+    }
+
+    private void getMessagesByChat() {
+        //Recoge la información de la clase MessagesProviders
+        Query query = mMessagesProvider.getMessagesByChat(mExtraidChat);
+
+        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
+                .setQuery(query, Message.class)
+                .build();
+
+        mAdapter = new MessagesAdapter(options, ChatActivity.this);
+        mRecyclerViewMessages.setAdapter(mAdapter);
+
+        //Cambios en tiempo real que sucede en la bd
+        mAdapter.startListening();
     }
 
 
@@ -155,7 +202,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatsProvider.create(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(ChatActivity.this, "El chat se creo correctamente", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ChatActivity.this, "El chat se creo correctamente", Toast.LENGTH_LONG).show();
             }
         });
     }
