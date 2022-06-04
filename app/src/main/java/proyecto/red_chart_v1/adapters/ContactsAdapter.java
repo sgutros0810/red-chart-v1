@@ -84,7 +84,7 @@ public class ContactsAdapter extends FirestoreRecyclerAdapter <User, ContactsAda
     private void goToChatActivity(String id) {
         Intent intent = new Intent(context, ChatActivity.class);
         //Enviamos el id del usuario seleccionado por parametro
-        intent.putExtra("id", id);
+        intent.putExtra("idUser", id);
         context.startActivity(intent);
     }
 

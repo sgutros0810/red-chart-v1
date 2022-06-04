@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import proyecto.red_chart_v1.models.Chat;
 
-//CLases para trabajar con la base de datos
+//Clase que maneja los datos de Firebase de la coleccion de 'Chats'
 public class ChatsProvider {
 
     CollectionReference mCollection;
@@ -20,9 +20,9 @@ public class ChatsProvider {
         mCollection = FirebaseFirestore.getInstance().collection("Chats");
     }
 
-    //Retorna una tarea, que crea la informacion en la bd
+    //Retorna la colecion con el id del chat, que crea la informacion en la bd
     public Task <Void> create (Chat chat) {
-        return mCollection.document().set(chat);
+        return mCollection.document(chat.getId()).set(chat);
     }
 
 

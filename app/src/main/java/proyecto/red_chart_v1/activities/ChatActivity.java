@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,31 +27,44 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.models.Chat;
+import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ChatsProvider;
+import proyecto.red_chart_v1.providers.MessagesProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
 
 public class ChatActivity extends AppCompatActivity {
 
     String mExtraIdUser;
+    String mExtraidChat;
+
     UsersProvider mUsersProvider;
     AuthProvider mAuthProvider;
     ChatsProvider mChatsProvider;
+    MessagesProvider mMessagesProvider;
 
     ImageView mImageViewBack;
+    ImageView mImageViewSend;
     TextView mTextViewUsername;
     CircleImageView mCircleImageView;
+    EditText mEditTextMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        mExtraIdUser = getIntent().getStringExtra("id");
+        mExtraIdUser = getIntent().getStringExtra("idUser");
+        mExtraidChat = getIntent().getStringExtra("idChat");
+
         mUsersProvider = new UsersProvider();
         mAuthProvider = new AuthProvider();
         mChatsProvider = new ChatsProvider();
+        mMessagesProvider = new MessagesProvider();
+
+        mEditTextMessage = findViewById(R.id.editTextMessage);
+        mImageViewSend = findViewById(R.id.imageViewSend);
 
         //Muestra el toolbar
         showChatToolbar(R.layout.chat_toolbar);
@@ -61,6 +75,45 @@ public class ChatActivity extends AppCompatActivity {
         //comprueba si existe un chat
         checkIfExistChat();
 
+
+        //Si pincha en el botón 'imageViewSend'
+        mImageViewSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Envia el mensaje
+                createMessage();
+            }
+        });
+    }
+
+    //Crea el mensaje del usuario1
+    private void createMessage() {
+        String textMessage = mEditTextMessage.getText().toString();         //obtiene el texto que envió el usuario
+
+        //Validar que el mensaje no sea vacio
+        if(!textMessage.equals("")){
+            Message message = new Message();
+
+            message.setIdChat(mExtraidChat);                //Id del chat entre el usuario1 y el usuario2
+            message.setIdSender(mAuthProvider.getId());     //El usuario1 que envia el mensaje de texto
+            message.setIdReceiver(mExtraIdUser);            //El usuario2 es el que recibe el mensaje de texto
+            message.setMessage(textMessage);                //Mensaje que envia
+            message.setStatus("ENVIADO");                   //Estado del mensaje
+            message.setTimestamp(new Date().getTime());     //Fecha de cuando envia el mensaje
+
+            //Si se ejecuta correctamente
+            mMessagesProvider.create(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    mEditTextMessage.setText("");           //Cuando envié el mensaje se borra
+                    Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        //Si el mensaje esta vacio
+        } else  {
+            Toast.makeText(ChatActivity.this, "Ingresa el mensaje", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Método que comprueba si existe un chat con esos ids (el usuario y el usuario con el que chatea)
@@ -68,20 +121,22 @@ public class ChatActivity extends AppCompatActivity {
         mChatsProvider.getChatByUser1AndUser2(mAuthProvider.getId(), mExtraIdUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                //Validación de que el documento no es null
                 if(queryDocumentSnapshots != null){
                     if(queryDocumentSnapshots.size() == 0){
                         //Crea un chat si no encuentra ningun chat con esos ids
                         createChat();
                     } else {
+                        mExtraidChat = queryDocumentSnapshots.getDocuments().get(0).getId();        //Obtiene el id del chat si viene null
                         Toast.makeText(ChatActivity.this, "El chat ya existe entre estos dos usuarios", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
-
     }
 
 
+    //Método que crea el chat
     private void createChat() {
         Chat chat = new Chat();
         //Establece la informacion
@@ -93,6 +148,8 @@ public class ChatActivity extends AppCompatActivity {
         ids.add(mExtraIdUser);           //Insertamos el otro usuario
 
         chat.setIds(ids);               //Pasamos los ids al array
+
+        mExtraidChat = chat.getId();
 
         //Si se ha creado correctamente...
         mChatsProvider.create(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -122,12 +179,12 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
 
-
                     }
                 }
             }
         });
     }
+
 
     //Muestra el toolbar del chat
     private void showChatToolbar(int resource){

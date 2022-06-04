@@ -12,7 +12,7 @@ import java.util.Queue;
 
 import proyecto.red_chart_v1.models.User;
 
-//Clase que maneja los datos de Firebase
+//Clase que maneja los datos de Firebase de la coleccion 'Users'
 public class UsersProvider {
 
     private CollectionReference mCollection;

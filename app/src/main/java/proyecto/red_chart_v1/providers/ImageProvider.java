@@ -37,7 +37,7 @@ public class ImageProvider {
         return mStorage.getDownloadUrl();
     }
 
-    //Eliminar la imagen atraves de la url
+    //Eliminar la imagen a traves de la url
     public  Task<Void> delete(String url) {
         return mFirebaseStorage.getReferenceFromUrl(url).delete();
     }

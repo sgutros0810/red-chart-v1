@@ -66,37 +66,18 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         //Obtener la información
         getUserInfo(holder, idUser);
 
-        /*
-        holder.textViewUsername.setText(user.getUsername());    //Muestra el nombre del contacto
-        holder.textViewInfo.setText(user.getInfo());            //Muestra el info del usuario
+        //Me muestra el chat
+        clickMyView(holder, chat.getId(), idUser);
+    }
 
-        //Validacion de que la imagen no este null ni vacio
-        if(user.getImage() != null)  {
-
-            //Muestra la imagen de la bd
-            if(!user.getImage().equals("")) {
-                Picasso.get().load(user.getImage()).into(holder.circleImageUser);
-            }
-            //Muestra la imagen por defecto
-            else {
-
-                holder.circleImageUser.setImageResource(R.drawable.ic_perfil_person);
-            }
-
-        }
-        //Muestra la imagen por defecto
-        else {
-            holder.circleImageUser.setImageResource(R.drawable.ic_perfil_person);
-        }
-
-        //Cuando pulse sobre un usuario, me muestra su chat
+    //Cuando pulse sobre un usuario, me muestra su chat
+    private void clickMyView(ViewHolder holder,  final String idChat, final String idUser) {
         holder.myView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToChatActivity(user.getId());
+                goToChatActivity(idChat, idUser);
             }
         });
-         */
     }
 
     // Método que obtiene la informacion del usuario por id
@@ -136,10 +117,11 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         return listener;
     }
     //Muestra la pantalla del chat del cusuario con el id
-    private void goToChatActivity(String id) {
+    private void goToChatActivity(String idChat, String idUser) {
         Intent intent = new Intent(context, ChatActivity.class);
         //Enviamos el id del usuario seleccionado por parametro
-        intent.putExtra("id", id);
+        intent.putExtra("idUser", idUser);
+        intent.putExtra("idChat", idChat);
         context.startActivity(intent);
     }
 

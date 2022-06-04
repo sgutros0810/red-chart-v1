@@ -10,6 +10,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
+//Clase que sirve para trabajar con FirebaseAuth
 public class AuthProvider {
     //Clase que maneja la parte de autenticación
     private FirebaseAuth mAuth;
