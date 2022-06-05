@@ -43,9 +43,14 @@ public class MessagesProvider {
     }
 
     //Método retorna el resultado de la consulta para Saber qué mensajes actualizar, creo en Firestore Database un índice (doble consulta)
-    public Query getMessagesByNotRead(String idChat){
+    public Query getMessagesByNotRead(String idChat) {
         //Retorna los mensajes de un chat, con el campo 'status' = 'ENVIADO' (no leidos)
         return  mCollection.whereEqualTo("idChat", idChat).whereEqualTo("status", "ENVIADO");
+    }
+
+    //Metodo retorna el resultado de una consulta, que devuelve el ultimo mensaje del chat. Creo en Firestore Database un índice (doble consulta)
+    public Query getLastMessages(String idChat) {
+        return  mCollection.whereEqualTo("idChat", idChat).orderBy("timestamp", Query.Direction.DESCENDING).limit(1);
     }
 
 }

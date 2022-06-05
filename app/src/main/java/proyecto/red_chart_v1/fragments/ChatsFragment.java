@@ -92,6 +92,10 @@ public class ChatsFragment extends Fragment {
             //Elimina el evento 'addSnapshotListener', para que no se llame siempre
             mChatsAdapter.getListener().remove();
         }
+
+        if(mChatsAdapter.getListenerLastMessage() != null){
+            mChatsAdapter.getListenerLastMessage().remove();
+        }
     }
 
 

@@ -19,24 +19,30 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.activities.ChatActivity;
 import proyecto.red_chart_v1.models.Chat;
+import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
+import proyecto.red_chart_v1.providers.MessagesProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
+import proyecto.red_chart_v1.utils.RelativeTime;
 
 // Clase que recoge los datos de los 'Contactos' de la bd
 public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.ViewHolder> {
     Context context;
     AuthProvider authProvider;
     UsersProvider usersProvider;
+    MessagesProvider messagesProvider;
     User user;
 
     ListenerRegistration listener;
+    ListenerRegistration listenerLastMessage;
 
     //Constructor
     public ChatsAdapter(FirestoreRecyclerOptions options, Context context) {
@@ -44,6 +50,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         this.context = context;
         authProvider = new AuthProvider();
         usersProvider = new UsersProvider();
+        messagesProvider = new MessagesProvider();
         user = new User();
     }
 
@@ -62,12 +69,60 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
                 break;
             }
         }
+        //Obtiene el ultimo mensaje del chat
+        getLastMessage(holder, chat.getId());
 
-        //Obtener la información
+        //Obtiene la información del usuario
         getUserInfo(holder, idUser);
 
         //Me muestra el chat
         clickMyView(holder, chat.getId(), idUser);
+    }
+
+    //Método que obtiene el ultimo mensaje del chat
+    private void getLastMessage(final ViewHolder holder, String idChat) {
+        //Hace la consulta de obtener el ultimo mensaje
+       listenerLastMessage = messagesProvider.getLastMessages(idChat).addSnapshotListener(new EventListener<QuerySnapshot>() {
+           @Override
+           public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+               //Validacion de que los documentos (resultado de la consulta) no sean null
+               if(querySnapshots != null) {
+                   int size = querySnapshots.size();  //Nº de documentos que retorna
+                   //Si hay mas de un documento
+                   if(size > 0){
+                       Message message = querySnapshots.getDocuments().get(0).toObject(Message.class);                  //Obtiene el ultimo mensaje de la bd del chat
+
+                       holder.textViewLastMessage.setText(message.getMessage());                                        //Muestra el ultimo mensaje
+                       holder.textViewTimestamp.setText(RelativeTime.timeFormatAMPM(message.getTimestamp(), context));  //Muestra la hora del ultimo mensaje
+
+
+                       //Si el mensaje lo envia el usuario de la sesion de la app
+                       if(message.getIdSender().equals(authProvider.getId())) {
+                           //Muestra el check
+                           holder.imageViewCheck.setVisibility(View.VISIBLE);
+
+                           //Si el estado del check es 'ENVIADO'
+                           if(message.getStatus().equals("ENVIADO")) {
+                               //Mostrará el doble check gris (lo recibe y no lo ha visto)
+                               holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_gris);
+
+                               //Si el estado del check es 'VISTO'
+                           } else if(message.getStatus().equals("VISTO")) {
+                               //Mostrará el doble check azul (lo recibe y lo ha visto)
+                               holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_blue);
+                           }
+
+                       //Si ha enviado el mensaje el otro usaurio
+                       } else {
+                           //Oculta el check
+                           holder.imageViewCheck.setVisibility(View.GONE);
+                       }
+
+
+                   }
+               }
+           }
+       });
     }
 
     //Cuando pulse sobre un usuario, me muestra su chat
@@ -112,10 +167,16 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         });
     }
 
-    //Metodo que retorna el listener
+    //Método que retorna el listener
     public ListenerRegistration getListener(){
         return listener;
     }
+
+    //Método que retorna el listener
+    public ListenerRegistration getListenerLastMessage(){
+        return listenerLastMessage;
+    }
+
     //Muestra la pantalla del chat del cusuario con el id
     private void goToChatActivity(String idChat, String idUser) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -132,7 +193,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         return new ViewHolder(view);
     }
 
-    //Mrtodo que devuelve ...
+    //Método que devuelve ...
     public  class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewUsername;
