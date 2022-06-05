@@ -19,7 +19,6 @@ public class Chat {
     }
 
     //Getters y setters
-
     public String getId() {
         return id;
     }

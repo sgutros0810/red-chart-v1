@@ -78,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerViewMessages = findViewById(R.id.recyclerViewMessages);
 
         mLinearLayoutManager  = new LinearLayoutManager(ChatActivity.this);
+        mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerViewMessages.setLayoutManager(mLinearLayoutManager);       //Se mostrara un mensaje debajo de otro
 
         //Muestra el toolbar
@@ -100,7 +101,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    //Meodos de ciclo de vida de android
+    //Metodos de ciclo de vida de android
     @Override
     protected void onStart() {
         super.onStart();
@@ -137,6 +138,12 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     mEditTextMessage.setText("");           //Cuando envié el mensaje se borra
+
+                    //Validación de que MessagesAdapter no sea null
+                    if(mAdapter != null){
+                        mAdapter.notifyDataSetChanged();        //Cambia si hubo algún cambio
+                    }
+
                     //Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -180,6 +187,23 @@ public class ChatActivity extends AppCompatActivity {
 
         //Cambios en tiempo real que sucede en la bd
         mAdapter.startListening();
+
+
+        //Para saber cuando se envió un nuevo mensaje
+        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                int numberMessage = mAdapter.getItemCount();                                     //Nº de los mensajes actuales
+                int lastMessagePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition(); //Último mensaje actual
+
+                //Muestra el ultimo mensaje cuando lo recibo
+                if(lastMessagePosition == -1 || (positionStart >=(numberMessage - 1) && lastMessagePosition == (positionStart - 1))) {
+                    mRecyclerViewMessages.scrollToPosition(positionStart);
+                }
+            }
+        });
     }
 
 
