@@ -66,7 +66,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
                     RelativeLayout.LayoutParams.WRAP_CONTENT
             );
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);                                                              //Lo posicionamos a la derecha
-            params.setMargins(150, 0, 0, 0);                                                            //Margenes
+            params.setMargins(100, 0, 0, 0);                                                            //Margenes
             holder.linearLayoutMessage.setLayoutParams(params);
             holder.linearLayoutMessage.setPadding(30, 20, 50, 20);                                       //Padding al linear layout
             holder.linearLayoutMessage.setBackground(context.getResources().getDrawable(R.drawable.bubble_corner_right));   //Fondo que queremos
@@ -81,7 +81,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
                     RelativeLayout.LayoutParams.WRAP_CONTENT
             );
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);                                                              //Lo posicionamos a la derecha
-            params.setMargins(0, 0, 150, 0);                                                            //Margenes
+            params.setMargins(0, 0, 100, 0);                                                            //Margenes
             holder.linearLayoutMessage.setLayoutParams(params);
             holder.linearLayoutMessage.setPadding(80, 20, 30, 20);                                       //Padding al linear layout
             holder.linearLayoutMessage.setBackground(context.getResources().getDrawable(R.drawable.bubble_corner_left));    //Fondo que queremos
