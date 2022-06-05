@@ -74,12 +74,24 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             holder.textViewDate.setTextColor(Color.DKGRAY);                                                                 //Color del texto de la fecha/hora
             holder.imageViewCheck.setVisibility(View.VISIBLE);                                                              //Mostrar el estado del check
 
+            //Si el estado del check es 'ENVIADO'
+            if(message.getStatus().equals("ENVIADO")) {
+                //Mostrará el doble check gris (lo recibe y no lo ha visto)
+                holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_gris);
+
+                //Si el estado del check es 'VISTO'
+            } else if(message.getStatus().equals("VISTO")) {
+                //Mostrará el doble check azul (lo recibe y lo ha visto)
+                holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_blue);
+            }
+
         } else {
             //Si somos los usuarios que reciben el mensaje (Receptores)
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT
             );
+
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);                                                              //Lo posicionamos a la derecha
             params.setMargins(0, 0, 100, 0);                                                            //Margenes
             holder.linearLayoutMessage.setLayoutParams(params);
@@ -88,8 +100,8 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             holder.textViewMessage.setTextColor(Color.BLACK);                                                               //Color del texto de mensaje
             holder.textViewDate.setTextColor(Color.DKGRAY);                                                                 //Color del texto de la fecha/hora
             holder.imageViewCheck.setVisibility(View.GONE);                                                                 //Ocultar el estado del check
-
         }
+
     }
 
 

@@ -6,6 +6,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import proyecto.red_chart_v1.models.Message;
 
 //Clase que maneja los datos de Firebase de la coleccion de 'Messages'
@@ -30,5 +33,20 @@ public class MessagesProvider {
         //Retorna los mensajes por el id del chat y los ordena de forma ascendente por el campo 'timestamp'
         return mCollection.whereEqualTo("idChat", idChat).orderBy("timestamp", Query.Direction.ASCENDING);
     }
+
+    //Método que actualiza en el id del Mensaje el campo 'status'
+    public Task<Void> updateStatus (String idMessage, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);                      //Actualiza el campo de la bd "status" a la variable status
+        //Retorna con el id del mensaje el estado
+        return mCollection.document(idMessage).update(map);
+    }
+
+    //Método retorna el resultado de la consulta para Saber qué mensajes actualizar, creo en Firestore Database un índice (doble consulta)
+    public Query getMessagesByNotRead(String idChat){
+        //Retorna los mensajes de un chat, con el campo 'status' = 'ENVIADO' (no leidos)
+        return  mCollection.whereEqualTo("idChat", idChat).whereEqualTo("status", "ENVIADO");
+    }
+
 }
 

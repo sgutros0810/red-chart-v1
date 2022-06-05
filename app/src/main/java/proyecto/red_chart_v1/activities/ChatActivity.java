@@ -167,9 +167,34 @@ public class ChatActivity extends AppCompatActivity {
                     } else {
                         mExtraidChat = queryDocumentSnapshots.getDocuments().get(0).getId();        //Obtiene el id del chat si viene null
                         getMessagesByChat();
+                        updateStatus();                                                             //Actualiza el estado del mensaje a "VISTO"
+
                         //Toast.makeText(ChatActivity.this, "El chat ya existe entre estos dos usuarios", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+    }
+
+    //Método que actualiza el estado del mensaje a "VISTO"
+    private void updateStatus() {
+        //El metodo 'getMessagesByNotRead()', retorna los documentos con el campo 'idChat' y 'status' con los valores establecidos
+        mMessagesProvider.getMessagesByNotRead(mExtraidChat).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                //Recorre los documentos recogidos de queryDocumentSnapshots
+                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+
+                    Message message = document.toObject(Message.class);           //Transforma un Documento a un Objeto
+
+                    //Validación de que el  usuario que envió el mensaje, no sea igual al usuario que tenemos en la sesión de la app
+                    if(!message.getIdSender().equals(mAuthProvider.getId())){
+                        //Cambia en el campo 'status' de 'ENVIADO' a 'VISTO'
+                        mMessagesProvider.updateStatus(message.getId(), "VISTO");
+                    }
+                }
+
             }
         });
     }
@@ -195,7 +220,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                int numberMessage = mAdapter.getItemCount();                                     //Nº de los mensajes actuales
+                updateStatus();                                                                         //Actualiza el estado del mensaje a "VISTO"
+
+                int numberMessage = mAdapter.getItemCount();                                            //Nº de los mensajes actuales
                 int lastMessagePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition(); //Último mensaje actual
 
                 //Muestra el ultimo mensaje cuando lo recibo
