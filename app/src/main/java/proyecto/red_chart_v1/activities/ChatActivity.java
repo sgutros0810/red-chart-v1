@@ -149,7 +149,7 @@ public class ChatActivity extends AppCompatActivity {
 
     //Método que comprueba si existe un chat con esos ids (el usuario y el usuario con el que chatea)
     private void checkIfExistChat() {
-        mChatsProvider.getChatByUser1AndUser2(mAuthProvider.getId(), mExtraIdUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        mChatsProvider.getChatByUser1AndUser2(mExtraIdUser, mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 //Validación de que el documento no es null
@@ -202,6 +202,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatsProvider.create(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                getMessagesByChat();
                 //Toast.makeText(ChatActivity.this, "El chat se creo correctamente", Toast.LENGTH_LONG).show();
             }
         });

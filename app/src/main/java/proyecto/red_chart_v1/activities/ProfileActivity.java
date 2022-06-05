@@ -98,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .setPreSelectedUrls(mReturnValue)                             //Pre selected Image Urls
                 .setExcludeVideos(true)                                       //No permite videos
                 .setVideoDurationLimitinSeconds(0)                            //Duracion del video
-                .setScreenOrientation(Options.SCREEN_ORIENTATION_LANDSCAPE)    //Orientacion vertical
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)    //Orientacion vertical
                 .setPath("/pix/images");
 
 

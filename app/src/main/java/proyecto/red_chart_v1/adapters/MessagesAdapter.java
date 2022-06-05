@@ -2,10 +2,13 @@ package proyecto.red_chart_v1.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,9 +56,40 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
     **/
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Message message) {
-
         holder.textViewMessage.setText(message.getMessage());   //Obtenemos el mensaje y lo muestra
         holder.textViewDate.setText(RelativeTime.timeFormatAMPM(message.getTimestamp(),context));  //Muestra la fecha personalizada
+
+        //Si nosotros enviado el mensaje
+        if(message.getIdSender().equals(authProvider.getId())){
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);                                                              //Lo posicionamos a la derecha
+            params.setMargins(150, 0, 0, 0);                                                            //Margenes
+            holder.linearLayoutMessage.setLayoutParams(params);
+            holder.linearLayoutMessage.setPadding(30, 20, 50, 20);                                       //Padding al linear layout
+            holder.linearLayoutMessage.setBackground(context.getResources().getDrawable(R.drawable.bubble_corner_right));   //Fondo que queremos
+            holder.textViewMessage.setTextColor(Color.BLACK);                                                               //Color del texto de mensaje
+            holder.textViewDate.setTextColor(Color.DKGRAY);                                                                 //Color del texto de la fecha/hora
+            holder.imageViewCheck.setVisibility(View.VISIBLE);                                                              //Mostrar el estado del check
+
+        } else {
+            //Si somos los usuarios que reciben el mensaje (Receptores)
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);                                                              //Lo posicionamos a la derecha
+            params.setMargins(0, 0, 150, 0);                                                            //Margenes
+            holder.linearLayoutMessage.setLayoutParams(params);
+            holder.linearLayoutMessage.setPadding(80, 20, 30, 20);                                       //Padding al linear layout
+            holder.linearLayoutMessage.setBackground(context.getResources().getDrawable(R.drawable.bubble_corner_left));    //Fondo que queremos
+            holder.textViewMessage.setTextColor(Color.BLACK);                                                               //Color del texto de mensaje
+            holder.textViewDate.setTextColor(Color.DKGRAY);                                                                 //Color del texto de la fecha/hora
+            holder.imageViewCheck.setVisibility(View.GONE);                                                                 //Ocultar el estado del check
+
+        }
     }
 
 
@@ -78,6 +112,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         TextView textViewMessage;
         TextView textViewDate;
         ImageView imageViewCheck;
+        LinearLayout linearLayoutMessage;
 
         View myView;
 
@@ -90,6 +125,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             textViewMessage = view.findViewById(R.id.textViewMessage);
             textViewDate = view.findViewById(R.id.textViewDate);
             imageViewCheck= view.findViewById(R.id.imageViewCheck);
+            linearLayoutMessage = view.findViewById(R.id.linearLayoutMessage);
         }
     }
 
