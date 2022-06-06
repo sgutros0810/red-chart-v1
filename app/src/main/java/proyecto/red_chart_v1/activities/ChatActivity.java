@@ -143,7 +143,8 @@ public class ChatActivity extends AppCompatActivity {
                     if(mAdapter != null){
                         mAdapter.notifyDataSetChanged();        //Cambia si hubo algún cambio
                     }
-
+                    //Actualiza el numero de mensajes
+                    mChatsProvider.updateNumberMessage(mExtraidChat);
                     //Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -240,6 +241,8 @@ public class ChatActivity extends AppCompatActivity {
         //Establece la informacion
         chat.setId(mAuthProvider.getId() + mExtraIdUser); //Obtengo el id del usuario + el id del otro usuario
         chat.setTimestamp(new Date().getTime());          //Muestra la fecha exacta que se creó el chat de tipo long
+        chat.setNumberMessages(0);                        //Se crea el campo 'numberMessages' a 0
+
 
         ArrayList<String> ids = new ArrayList<>();
         ids.add(mAuthProvider.getId());  //El primer usuario que vamos insertar es usuario principal
