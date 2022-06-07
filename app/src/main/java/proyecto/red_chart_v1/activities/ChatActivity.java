@@ -44,6 +44,7 @@ import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ChatsProvider;
 import proyecto.red_chart_v1.providers.MessagesProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
+import proyecto.red_chart_v1.utils.RelativeTime;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -369,6 +370,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
                 //Si el document snapshot es diferente de null
                 if(documentSnapshot != null){
+
                     //si existe en la base de datos el documentsnapshot
                     if(documentSnapshot.exists()){
                         User user = documentSnapshot.toObject(User.class);              //Obtiene la informacion del usuario seleccionado
@@ -381,9 +383,24 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
 
+                        //Si el usuario se encuentra 'En linea' muestra un texto
+                        if(user.isOnline()){
+
+                            mTextViewOnline.setText("En línea");
+
+                        //Muestra la ultima vez que se conectó
+                        } else {
+                            //Variable que contiene la ultima vez que se conecto de la app
+                            String relativeTime = RelativeTime.getTimeAgo(user.getLastConnect(), ChatActivity.this);
+
+                            //Muestra la fecha
+                            mTextViewOnline.setText(relativeTime);
+                        }
+
                     }
                 }
             }
+
         });
     }
 

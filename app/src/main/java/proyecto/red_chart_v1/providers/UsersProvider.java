@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -48,25 +49,34 @@ public class UsersProvider {
         return mCollection.document(user.getId()).update(map);
     }
 
-    //Método que Actualiza el campo 'image' del usuario de la base de datos
+    //Método que actualiza el campo 'image' del usuario de la base de datos
     public Task<Void> updateImage(String id, String url){
         Map<String, Object> map = new HashMap<>();
         map.put("image", url);
         return mCollection.document(id).update(map);
     }
 
-    //Método que Actualiza el campo 'username' del usuario de la base de datos
+    //Método que actualiza el campo 'username' del usuario de la base de datos
     public Task<Void> updateUsername(String id, String username){
         Map<String, Object> map = new HashMap<>();
         map.put("username", username);
         return mCollection.document(id).update(map);
     }
 
-    //Método que Actualiza el campo 'info', el estado del usuario de la base de datos
+    //Método que actualiza el campo 'info', el estado de perfil de la base de datos
     public Task<Void> updateInfo(String id, String info){
         Map<String, Object> map = new HashMap<>();
         map.put("info", info);
         return mCollection.document(id).update(map);
+    }
+
+    //Método que actualiza el campo 'online' y el campo 'lastConnect'
+    public Task<Void> updateOnline(String idUser, boolean status){
+        Map<String, Object> map = new HashMap<>();
+        map.put("online", status);                      //Si se encuentra 'En linea' o no
+        map.put("lastConnect", new Date().getTime());   //Última vez que se conectó
+
+        return mCollection.document(idUser).update(map);
     }
 
 }

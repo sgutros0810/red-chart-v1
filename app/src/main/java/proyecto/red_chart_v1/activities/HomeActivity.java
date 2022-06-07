@@ -21,10 +21,12 @@ import proyecto.red_chart_v1.fragments.CameraFragment;
 import proyecto.red_chart_v1.fragments.ChatsFragment;
 import proyecto.red_chart_v1.fragments.ContactsFragment;
 import proyecto.red_chart_v1.providers.AuthProvider;
+import proyecto.red_chart_v1.providers.UsersProvider;
 
 public class HomeActivity extends AppCompatActivity {
     Button mButtonSignOut;
     AuthProvider mAuthProvider;
+    UsersProvider mUsersProvider;
 
     Toolbar mToolBar;
     MenuItem item;
@@ -60,6 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         mContactsFragment = new ContactsFragment();
         mCameraFragment = new CameraFragment();
 
+
+
         // Añade los fragmentos en el adapter (Fragmento, titulo)
         adapter.addFragment(mCameraFragment, "");
         adapter.addFragment(mChatsFragment, "CHATS" );
@@ -70,8 +74,25 @@ public class HomeActivity extends AppCompatActivity {
 
         setupTabIcom();
 
+        mUsersProvider = new UsersProvider();
         mAuthProvider = new AuthProvider();
 
+    }
+
+    //Cuando esta dentro de la aplicación
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //actualiza el campo 'online' a 'true'
+        mUsersProvider.updateOnline(mAuthProvider.getId(), true);
+    }
+
+    //Cuando sale de la aplicación
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //actualiza el campo 'online' a 'false'
+        mUsersProvider.updateOnline(mAuthProvider.getId(), false);
     }
 
     //Opciones del menu
