@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +29,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
@@ -53,12 +57,15 @@ public class ChatActivity extends AppCompatActivity {
     ImageView mImageViewBack;
     ImageView mImageViewSend;
     TextView mTextViewUsername;
+    TextView mTextViewOnline;
     CircleImageView mCircleImageView;
     EditText mEditTextMessage;
 
     MessagesAdapter mAdapter;
     RecyclerView mRecyclerViewMessages;
     LinearLayoutManager mLinearLayoutManager;
+
+    Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +97,10 @@ public class ChatActivity extends AppCompatActivity {
         //comprueba si existe un chat
         checkIfExistChat();
 
+        //Para saber si el otro usuario esta escribiendo
+        setWriting();
+
+
 
         //Si pincha en el botón 'imageViewSend'
         mImageViewSend.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +108,47 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Envia el mensaje
                 createMessage();
+            }
+        });
+    }
+
+    private void setWriting() {
+        //Eventos de editText
+        mEditTextMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            //Método para saber cuando esta escribiendo el usuario
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Validación de que el Timer sea dieferente de null
+                if(mTimer != null) {
+                    //Validación de que mExtraidChat no sea null
+                    if (mExtraidChat != null) {
+                        //Actualiza el campo 'writing' a "Escribiendo..."
+                        mChatsProvider.updateWriting(mExtraidChat, mAuthProvider.getId());
+                        mTimer.cancel();   //Timer deja de escuchar
+                    }
+                }
+            }
+
+            //Método para saber cuando deja de escribir el usuario
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                mTimer = new Timer();
+                mTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        //Validación de que mExtraidChat no sea null
+                        if(mExtraidChat != null) {
+                            //Actualiza el campo 'writing' a ""
+                            mChatsProvider.updateWriting(mExtraidChat, "");
+                        }
+                    }
+                }, 2000); //Despues de estar escribiendo, dura unos 2 segundos más, y el campo 'writing' para a vacio -> ""
             }
         });
     }
@@ -169,8 +221,46 @@ public class ChatActivity extends AppCompatActivity {
                         mExtraidChat = queryDocumentSnapshots.getDocuments().get(0).getId();        //Obtiene el id del chat si viene null
                         getMessagesByChat();
                         updateStatus();                                                             //Actualiza el estado del mensaje a "VISTO"
-
+                        getChatInfo();
                         //Toast.makeText(ChatActivity.this, "El chat ya existe entre estos dos usuarios", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    //Método
+    private void getChatInfo() {
+        //Obtiene el id de un documento en Chats
+        mChatsProvider.getChatById(mExtraidChat).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                //Validacion de que contiene datos leídos de un documento en su base de datos y no sea null
+                if(documentSnapshot != null) {
+                    //Validacion de si existe
+                    if(documentSnapshot.exists()) {
+                        //Retorna un chat
+                        Chat chat = documentSnapshot.toObject(Chat.class);  //Obtiene la información y lo transforma a un objeto
+
+
+                        //Validación de que la informacion obtenida no sea null y no este vacio
+                        if(chat.getWriting() != null){
+                            if(!chat.getWriting().equals("")){
+
+                                //Si el id es diferente al usuario principal pone el estado a 'Escribiendo...'
+                                if(!chat.getWriting().equals(mAuthProvider.getId())){
+                                    mTextViewOnline.setText("Escribiendo...");
+                                } else {
+                                    mTextViewOnline.setText("");
+                                }
+
+                            }  else {
+                                mTextViewOnline.setText("");
+                            }
+
+                        }
+
+
                     }
                 }
             }
@@ -238,10 +328,11 @@ public class ChatActivity extends AppCompatActivity {
     //Método que crea el chat
     private void createChat() {
         Chat chat = new Chat();
-        //Establece la informacion
+        //Establece la informacion por defecto
         chat.setId(mAuthProvider.getId() + mExtraIdUser); //Obtengo el id del usuario + el id del otro usuario
         chat.setTimestamp(new Date().getTime());          //Muestra la fecha exacta que se creó el chat de tipo long
         chat.setNumberMessages(0);                        //Se crea el campo 'numberMessages' a 0
+        chat.setWriting("");
 
         ArrayList<String> ids = new ArrayList<>();
         ids.add(mAuthProvider.getId());                     //El primer usuario que vamos insertar es usuario principal
@@ -303,7 +394,7 @@ public class ChatActivity extends AppCompatActivity {
         mImageViewBack = view.findViewById(R.id.imageViewBack);
         mTextViewUsername = view.findViewById(R.id.textViewUsername);
         mCircleImageView = view.findViewById(R.id.circleImageUser);
-
+        mTextViewOnline = view.findViewById(R.id.textViewOnline);
 
         //Vuelve a la actividad anterior
         mImageViewBack.setOnClickListener(new View.OnClickListener() {

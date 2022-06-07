@@ -3,6 +3,7 @@ package proyecto.red_chart_v1.providers;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -24,7 +25,7 @@ public class ChatsProvider {
         mCollection = FirebaseFirestore.getInstance().collection("Chats");
     }
 
-    //Retorna la colecion con el id del chat, que crea la informacion en la bd
+    //Retorna la coleccion con el id del chat, que crea la informacion en la bd
     public Task <Void> create (Chat chat) {
         return mCollection.document(chat.getId()).set(chat);
     }
@@ -34,6 +35,22 @@ public class ChatsProvider {
         //Si encuentra en el array el id del usuario y si el campo 'numberMessages' es mayor o igual a 1, lo retorna
         return mCollection.whereArrayContains("ids",idUser).whereGreaterThanOrEqualTo("numberMessages", 1);
     }
+
+    //Obtiene el id de un documento en Chats
+    public DocumentReference getChatById(String idChat){
+        //Si encuentra en el array el id del usuario y si el campo 'numberMessages' es mayor o igual a 1, lo retorna
+        return mCollection.document(idChat);
+    }
+
+
+    //Método que actualiza el estado de escribir en la base de datos
+    public Task <Void> updateWriting (String idChat, String idUser) {
+        Map<String, Object> map = new HashMap<>();  //Clave, valor
+        map.put("writing", idUser);               //Actualizamos 'campo', 'valor'
+
+        return mCollection.document(idChat).update(map);
+    }
+
 
     //Método que retorna si existe algun chat con el 'Usuario Principal (User1)' + el otro 'Usuario (User2)'
     public Query getChatByUser1AndUser2 (String idUser1, String idUser2) {
