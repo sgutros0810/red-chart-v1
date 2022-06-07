@@ -66,6 +66,7 @@
                     android:layout_height="18dp"
                     android:src="@drawable/icon_check_double_blue" />
 
+                <!-- Ultimo mensaje -->
                 <TextView
                     android:id="@+id/textViewLastMessage"
                     android:layout_width="wrap_content"
@@ -75,6 +76,19 @@
                     android:maxLines="1"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"/>
+
+                <!-- Ultimo mensaje -->
+                <TextView
+                    android:id="@+id/textViewWriting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Escribiendo..."
+                    android:textColor="@color/colorNotification"
+                    android:textSize="14dp"
+                    android:maxLines="1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
 
                 <!-- Mensajes no leidos -->
                 <FrameLayout

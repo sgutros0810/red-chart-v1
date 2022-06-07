@@ -45,6 +45,8 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
     ListenerRegistration listener;
     ListenerRegistration listenerLastMessage;
 
+
+
     //Constructor
     public ChatsAdapter(FirestoreRecyclerOptions options, Context context) {
         super(options);
@@ -80,8 +82,37 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         //Obtiene los mensajes no leidos
         getMessagesNotRead(holder, chat.getId());
 
+        //
+        setWriting(holder, chat);
+
         //Me muestra el chat
         clickMyView(holder, chat.getId(), idUser);
+    }
+
+
+    //Método que oculta el ultimo mensaje y muestra es estado de 'Escribiendo...'
+    private void setWriting(ViewHolder holder, Chat chat) {
+        //Validación de que la informacion obtenida no sea null y no este vacio
+        if(chat.getWriting() != null){
+            if(!chat.getWriting().equals("")){
+
+                //Si el id es diferente al usuario principal pone el estado a 'Escribiendo...'
+                if(!chat.getWriting().equals(authProvider.getId())){
+                    //Oculta el ultimo mensaje y muestra que el usuari esta escribiendo
+                    holder.textViewWriting.setVisibility(View.VISIBLE);
+                    holder.textViewLastMessage.setVisibility(View.GONE);
+                } else {
+                    //Muestra el ultimo mensaje y oculta que el usuario esta escribiendo
+                    holder.textViewWriting.setVisibility(View.GONE);
+                    holder.textViewLastMessage.setVisibility(View.VISIBLE);
+                }
+
+            }  else {
+                //Muestra el ultimo mensaje y oculta que el usuario esta escribiendo
+                holder.textViewWriting.setVisibility(View.GONE);
+                holder.textViewLastMessage.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
@@ -234,6 +265,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         TextView textViewTimestamp;
         FrameLayout frameLayoutMessagesNotRead;
         TextView textViewMessagesNotRead;
+        TextView textViewWriting;
 
         View myView;
 
@@ -250,6 +282,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
             textViewTimestamp= view.findViewById(R.id.textViewTimestamp);
             frameLayoutMessagesNotRead= view.findViewById(R.id.frameLayoutMessagesNotRead);
             textViewMessagesNotRead = view.findViewById(R.id.textViewMessagesNotRead);
+            textViewWriting = view.findViewById(R.id.textViewWriting);
         }
     }
 

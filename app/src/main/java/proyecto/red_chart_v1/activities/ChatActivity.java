@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
@@ -66,6 +67,9 @@ public class ChatActivity extends AppCompatActivity {
     LinearLayoutManager mLinearLayoutManager;
 
     Timer mTimer;
+
+    ListenerRegistration mListenerChat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +174,14 @@ public class ChatActivity extends AppCompatActivity {
         mAdapter.stopListening();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mListenerChat != null) {
+            mListenerChat.remove();
+        }
+    }
+
     //Crea el mensaje del usuario1
     private void createMessage() {
         String textMessage = mEditTextMessage.getText().toString();         //obtiene el texto que envió el usuario
@@ -232,7 +244,7 @@ public class ChatActivity extends AppCompatActivity {
     //Método
     private void getChatInfo() {
         //Obtiene el id de un documento en Chats
-        mChatsProvider.getChatById(mExtraidChat).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        mListenerChat = mChatsProvider.getChatById(mExtraidChat).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
                 //Validacion de que contiene datos leídos de un documento en su base de datos y no sea null
@@ -241,7 +253,6 @@ public class ChatActivity extends AppCompatActivity {
                     if(documentSnapshot.exists()) {
                         //Retorna un chat
                         Chat chat = documentSnapshot.toObject(Chat.class);  //Obtiene la información y lo transforma a un objeto
-
 
                         //Validación de que la informacion obtenida no sea null y no este vacio
                         if(chat.getWriting() != null){
@@ -257,7 +268,6 @@ public class ChatActivity extends AppCompatActivity {
                             }  else {
                                 mTextViewOnline.setText("");
                             }
-
                         }
 
 
