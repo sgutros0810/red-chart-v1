@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,14 +70,45 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
                 break;
             }
         }
+
         //Obtiene el ultimo mensaje del chat
         getLastMessage(holder, chat.getId());
 
         //Obtiene la información del usuario
         getUserInfo(holder, idUser);
 
+        //Obtiene los mensajes no leidos
+        getMessagesNotRead(holder, chat.getId());
+
         //Me muestra el chat
         clickMyView(holder, chat.getId(), idUser);
+    }
+
+
+    //Mensajes del usuario del chat que no ha leido
+    private void getMessagesNotRead(final ViewHolder holder, final String idChat) {
+        //Mensajes no leidos del otro usaurio en nuestro chat con la otra persona
+        messagesProvider.getReceiverMessagesNotRead(idChat, authProvider.getId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+                //Si 'querySnapshot' es diferente de null
+                if(querySnapshot != null) {
+                    int size = querySnapshot.size();    //Nº de mensajes no leidos
+                    //Si el nº de mensajes no leidos es mayor que 0
+                    if(size > 0) {
+                        //Muestra el nº de mensajes no leidos
+                        holder.frameLayoutMessagesNotRead.setVisibility(View.VISIBLE);
+                        holder.textViewMessagesNotRead.setText(String.valueOf(size));
+                        holder.textViewTimestamp.setTextColor(context.getResources().getColor(R.color.colorNotification));
+                    } else {
+                        //Si no tenemos ningun mensaje por leer, oculta el numero 0
+                        holder.frameLayoutMessagesNotRead.setVisibility(View.GONE);
+                        holder.textViewTimestamp.setTextColor(context.getResources().getColor(R.color.colorGrayDark));
+
+                    }
+                }
+            }
+        });
     }
 
     //Método que obtiene el ultimo mensaje del chat
@@ -89,7 +121,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
                if(querySnapshots != null) {
                    int size = querySnapshots.size();  //Nº de documentos que retorna
                    //Si hay mas de un documento
-                   if(size > 0){
+                   if(size > 0) {
                        Message message = querySnapshots.getDocuments().get(0).toObject(Message.class);                  //Obtiene el ultimo mensaje de la bd del chat
 
                        holder.textViewLastMessage.setText(message.getMessage());                                        //Muestra el ultimo mensaje
@@ -97,28 +129,26 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
 
 
                        //Si el mensaje lo envia el usuario de la sesion de la app
-                       if(message.getIdSender().equals(authProvider.getId())) {
+                       if (message.getIdSender().equals(authProvider.getId())) {
                            //Muestra el check
                            holder.imageViewCheck.setVisibility(View.VISIBLE);
 
                            //Si el estado del check es 'ENVIADO'
-                           if(message.getStatus().equals("ENVIADO")) {
+                           if (message.getStatus().equals("ENVIADO")) {
                                //Mostrará el doble check gris (lo recibe y no lo ha visto)
                                holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_gris);
 
                                //Si el estado del check es 'VISTO'
-                           } else if(message.getStatus().equals("VISTO")) {
+                           } else if (message.getStatus().equals("VISTO")) {
                                //Mostrará el doble check azul (lo recibe y lo ha visto)
                                holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_blue);
                            }
 
-                       //Si ha enviado el mensaje el otro usaurio
+                           //Si ha enviado el mensaje el otro usaurio
                        } else {
                            //Oculta el check
                            holder.imageViewCheck.setVisibility(View.GONE);
                        }
-
-
                    }
                }
            }
@@ -193,6 +223,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         return new ViewHolder(view);
     }
 
+
     //Método que devuelve ...
     public  class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -201,6 +232,9 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         CircleImageView circleImageUser;
         ImageView imageViewCheck;
         TextView textViewTimestamp;
+        FrameLayout frameLayoutMessagesNotRead;
+        TextView textViewMessagesNotRead;
+
         View myView;
 
         public ViewHolder(View view){
@@ -214,6 +248,8 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
             circleImageUser = view.findViewById(R.id.circleImageUser);
             imageViewCheck= view.findViewById(R.id.imageViewCheck);
             textViewTimestamp= view.findViewById(R.id.textViewTimestamp);
+            frameLayoutMessagesNotRead= view.findViewById(R.id.frameLayoutMessagesNotRead);
+            textViewMessagesNotRead = view.findViewById(R.id.textViewMessagesNotRead);
         }
     }
 

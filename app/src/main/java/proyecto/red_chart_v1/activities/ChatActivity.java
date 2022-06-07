@@ -243,12 +243,11 @@ public class ChatActivity extends AppCompatActivity {
         chat.setTimestamp(new Date().getTime());          //Muestra la fecha exacta que se creó el chat de tipo long
         chat.setNumberMessages(0);                        //Se crea el campo 'numberMessages' a 0
 
-
         ArrayList<String> ids = new ArrayList<>();
-        ids.add(mAuthProvider.getId());  //El primer usuario que vamos insertar es usuario principal
-        ids.add(mExtraIdUser);           //Insertamos el otro usuario
+        ids.add(mAuthProvider.getId());                     //El primer usuario que vamos insertar es usuario principal
+        ids.add(mExtraIdUser);                              //Insertamos el otro usuario
 
-        chat.setIds(ids);               //Pasamos los ids al array
+        chat.setIds(ids);                                   //Pasamos los ids al array
 
         mExtraidChat = chat.getId();
 

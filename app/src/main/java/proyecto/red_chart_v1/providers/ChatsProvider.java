@@ -32,7 +32,7 @@ public class ChatsProvider {
     //Método que retorna todos los chats del usuario y filtra si es mayor o igual a 1
     public Query getUserChats(String idUser){
         //Si encuentra en el array el id del usuario y si el campo 'numberMessages' es mayor o igual a 1, lo retorna
-        return mCollection.whereArrayContains("ids",idUser).whereGreaterThanOrEqualTo("1", 1);
+        return mCollection.whereArrayContains("ids",idUser).whereGreaterThanOrEqualTo("numberMessages", 1);
     }
 
     //Método que retorna si existe algun chat con el 'Usuario Principal (User1)' + el otro 'Usuario (User2)'
@@ -54,6 +54,7 @@ public class ChatsProvider {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 //Si el documento existe en la bd
                 if(documentSnapshot.exists()){
+
                     //Si dentro del documento contiene un campo llamado 'numberMessages'
                     if(documentSnapshot.contains("numberMessages")){
 

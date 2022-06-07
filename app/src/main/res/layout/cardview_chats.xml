@@ -47,7 +47,8 @@
                     android:layout_height="wrap_content"
                     android:text="6:00 p.m"
                     android:textSize="11dp"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textColor="@color/colorGrayDark" />
 
             </LinearLayout>
 
@@ -72,7 +73,31 @@
                     android:text="Último mensaje"
                     android:textSize="14dp"
                     android:maxLines="1"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"/>
+
+                <!-- Mensajes no leidos -->
+                <FrameLayout
+                    android:id="@+id/frameLayoutMessagesNotRead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <View
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/circular_view" />
+
+                    <TextView
+                        android:id="@+id/textViewMessagesNotRead"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:textSize="12dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white" />
+
+                </FrameLayout>
+
 
             </LinearLayout>
 

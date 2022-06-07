@@ -14,6 +14,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorAccent">#E3CECA</color>
     <color name="colorMessageSend">#E3CECA</color>
+    <color name="colorNotification">#F13D3D</color>
     <color name="colorPrimaryDarkmarron">#732020</color>
     <color name="colorPrimaryLigthmarron">#732020</color>
     <color name="colorOrange">#CF5A0C</color>
