@@ -64,7 +64,8 @@
                     android:id="@+id/imageViewCheck"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/icon_check_double_blue" />
+                    android:src="@drawable/icon_check_double_blue"
+                    android:visibility="gone"/>
 
                 <!-- Ultimo mensaje -->
                 <TextView
@@ -94,7 +95,8 @@
                 <FrameLayout
                     android:id="@+id/frameLayoutMessagesNotRead"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <View
                         android:layout_width="22dp"

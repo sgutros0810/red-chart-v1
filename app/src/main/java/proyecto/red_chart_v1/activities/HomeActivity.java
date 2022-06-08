@@ -22,6 +22,7 @@ import proyecto.red_chart_v1.fragments.ChatsFragment;
 import proyecto.red_chart_v1.fragments.ContactsFragment;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
+import proyecto.red_chart_v1.utils.AppBackgroundHelper;
 
 public class HomeActivity extends AppCompatActivity {
     Button mButtonSignOut;
@@ -83,16 +84,16 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //actualiza el campo 'online' a 'true'
-        mUsersProvider.updateOnline(mAuthProvider.getId(), true);
+        //Se encuentra dentro de la app
+        AppBackgroundHelper.online(HomeActivity.this, true);
     }
 
     //Cuando sale de la aplicación
     @Override
     protected void onStop() {
         super.onStop();
-        //actualiza el campo 'online' a 'false'
-        mUsersProvider.updateOnline(mAuthProvider.getId(), false);
+        //Se encuentra en segundo plano o la ha cerrado la app
+        AppBackgroundHelper.online(HomeActivity.this, false);
     }
 
     //Opciones del menu

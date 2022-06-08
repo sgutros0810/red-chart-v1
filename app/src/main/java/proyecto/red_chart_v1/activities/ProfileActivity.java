@@ -13,6 +13,7 @@ import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ImageProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
+import proyecto.red_chart_v1.utils.AppBackgroundHelper;
 import proyecto.red_chart_v1.utils.MyToolBarSimple;
 
 import android.app.Activity;
@@ -133,7 +134,22 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    //Cuando esta dentro de la aplicación
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Para saber que la app esta abierta, se pone el 'online' -> 'true'
+        AppBackgroundHelper.online(ProfileActivity.this, true);
 
+    }
+
+    //Cuando sale de la aplicación
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Para saber que la app esta cerra/segundo plano, se pone el campo 'online' -> 'false' y pone la ultima hora que se conectó
+        AppBackgroundHelper.online(ProfileActivity.this, false);
+    }
 
     //Metodo que deja de escuchar los eventos en tiempo real de Firebase
     @Override

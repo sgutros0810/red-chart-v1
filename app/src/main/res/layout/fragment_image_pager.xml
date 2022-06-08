@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.ImagePagerFragment"
+    app:cardBackgroundColor="@color/colorFullBlack">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageViewPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fondo"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="60dp"
+            android:layout_weight="1"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_photo_white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="25dp"
+                android:background="@color/white"
+                android:layout_marginLeft="10dp" />
+
+            <EditText
+                android:id="@+id/editTextComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Añade un comentario"
+                android:textColorHint="@color/colorGrayLight"
+                android:textColor="@color/white"
+                android:background="@null"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="14dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/imageViewSend"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/ic_send" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_arrow_back"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"/>
+
+</androidx.cardview.widget.CardView>
