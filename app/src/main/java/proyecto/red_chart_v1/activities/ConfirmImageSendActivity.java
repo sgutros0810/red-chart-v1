@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_image_send);
+
+        setStatusBarColor();
 
         mViewPager = findViewById(R.id.viewPager);
 
@@ -45,6 +48,18 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
     //Método que recibe la densidad de pixeles
     public static float dpToPixels(int dp, Context context) {
         return dp * (context.getResources().getDisplayMetrics().density);
+    }
+
+    //Cambia el color de la barra de estado del movil cuando aparece el fragment de enviar imagenes
+    private void setStatusBarColor(){
+        //Si la version de Android en la que esta la app instalada es mayor a M
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorFullBlack, this.getTheme()));
+        }
+        //Si la version de Android en la que esta la app instalada es mayor a LOLLIPOP
+        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorFullBlack));
+        }
     }
 
 }
