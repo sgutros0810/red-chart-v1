@@ -21,6 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity
+            android:name=".activities.ConfirmImageSendActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />
         <activity

@@ -7,7 +7,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.fxn.pix.Options;
+import com.fxn.pix.Pix;
+import com.fxn.utility.PermUtil;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -28,6 +35,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -64,6 +72,8 @@ public class ChatActivity extends AppCompatActivity {
     CircleImageView mCircleImageView;
     EditText mEditTextMessage;
 
+    ImageView mImageViewSelectPictures;
+
     MessagesAdapter mAdapter;
     RecyclerView mRecyclerViewMessages;
     LinearLayoutManager mLinearLayoutManager;
@@ -73,6 +83,10 @@ public class ChatActivity extends AppCompatActivity {
     ListenerRegistration mListenerChat;
 
     User mUser;
+
+    //Variables para la liberia Pix
+    Options mOptions;
+    ArrayList<String> mReturnValue = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +103,25 @@ public class ChatActivity extends AppCompatActivity {
 
         mEditTextMessage = findViewById(R.id.editTextMessage);
         mImageViewSend = findViewById(R.id.imageViewSend);
+        mImageViewSelectPictures = findViewById(R.id.imageViewSelectPictures);
         mRecyclerViewMessages = findViewById(R.id.recyclerViewMessages);
 
         mLinearLayoutManager  = new LinearLayoutManager(ChatActivity.this);
         mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerViewMessages.setLayoutManager(mLinearLayoutManager);       //Se mostrara un mensaje debajo de otro
+
+
+        mOptions = Options.init()
+                .setRequestCode(100)                                          //Request code for activity results
+                .setCount(5)                                                  //Numero de imagenes que podemos seleccionar
+                .setFrontfacing(false)                                         //Por defecto, se pone la camara trasera
+                .setPreSelectedUrls(mReturnValue)                             //Pre selected Image Urls
+                .setExcludeVideos(true)                                       //No permite videos
+                .setVideoDurationLimitinSeconds(0)                            //Duracion del video
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)    //Orientacion vertical
+                .setPath("/pix/images");
+
+
 
         //Muestra el toolbar
         showChatToolbar(R.layout.chat_toolbar);
@@ -115,6 +143,15 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Envia el mensaje
                 createMessage();
+            }
+        });
+
+        //Si pincha en el icono de 'imageViewSelectPictures'
+        mImageViewSelectPictures.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Abre la libreria 'Pix' -> Sirve para seleccionar imagenes
+                startPix();
             }
         });
     }
@@ -197,6 +234,13 @@ public class ChatActivity extends AppCompatActivity {
             mListenerChat.remove();
         }
     }
+
+
+    //Inicializa la libreria de réplica del selector de imágenes de WhatsApp
+    private void startPix() {
+        Pix.start(ChatActivity.this, mOptions);
+    }
+
 
     //Crea el mensaje del usuario1
     private void createMessage() {
@@ -471,4 +515,37 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //Recibe las imagenes que el usuario selecciono y la guarda
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
+            mReturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);     //Retorna las imagenes que hemos seleccionado
+
+            Intent intent = new Intent(ChatActivity.this, ConfirmImageSendActivity.class);       //Pasamos el contexto y a la actividad que queremos ir
+            intent.putExtra("data", mReturnValue);   //Hace que establezca un 'dato' -> (Todas las rutas de las imagenes seleccionadas)  que envia a la clase 'ConfirmImageSendActivity.class'
+            startActivity(intent);
+        }
+    }
+
+    //Seleccion de Permisos de camara y galeria
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS) {
+            //Si acepta los permisos
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Pix.start(ChatActivity.this, mOptions);
+
+                //Sino acepta los permisos
+            } else {
+                Toast.makeText(ChatActivity.this, "Por favor, acepte los permisos para tener acceso a la cámara.", Toast.LENGTH_LONG).show();
+            }
+            return;
+
+        }
+    }
+
 }

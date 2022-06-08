@@ -77,7 +77,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
                 .setPreSelectedUrls(mReturnValue)                             //Pre selected Image Urls
                 .setExcludeVideos(true)                                       //No permite videos
                 .setVideoDurationLimitinSeconds(0)                            //Duracion del video
-                .setScreenOrientation(Options.SCREEN_ORIENTATION_LANDSCAPE)    //Orientacion vertical
+                .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)    //Orientacion vertical
                 .setPath("/pix/images");
 
 
@@ -171,7 +171,7 @@ public class CompleteInfoActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 100) {
-            mReturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            mReturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);            //Retorna las imagenes que hemos seleccionado
             mImageFile = new File(mReturnValue.get(0));
             mCircleImagePhoto.setImageBitmap(BitmapFactory.decodeFile(mImageFile.getAbsolutePath()));
         }
