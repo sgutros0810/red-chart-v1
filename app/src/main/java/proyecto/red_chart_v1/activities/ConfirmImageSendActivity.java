@@ -15,6 +15,7 @@ import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.adapters.OptionsPagerAdapter;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.providers.AuthProvider;
+import proyecto.red_chart_v1.providers.ImageProvider;
 import proyecto.red_chart_v1.utils.ShadowTransformer;
 
 public class ConfirmImageSendActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
     ArrayList<Message> messages = new ArrayList<>();    //Array que guarda los mensajes de cada iamgen
 
     AuthProvider mAuthProvider;
+    ImageProvider mImageProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,8 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
         setStatusBarColor();
 
         mViewPager = findViewById(R.id.viewPager);
-
         mAuthProvider = new AuthProvider();
+        mImageProvider = new ImageProvider();
 
         data = getIntent().getStringArrayListExtra("data");     //contiene la ruta de todas las imagenes seleccionadas
         mExtraIdChat = getIntent().getStringExtra("idChat");    //contiene el id del chat seleccionado
@@ -81,10 +83,11 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
 
     //Método que guarda y envia el texto del editText de cada imagen a la base de datos
     public void send(){
-        //Recorre el array 'menssages'
-        for (int i = 0; i < messages.size(); i++) {
-            Log.d("PRUEBA", "Comentario: " + messages.get(i));  //PRUEBA DE QUE RECIBE EL ARRAY 'messages'
-        }
+        //almacena varios archivos
+        mImageProvider.uploadMultiple(ConfirmImageSendActivity.this, messages);
+
+        //se cierra
+        finish();
     }
 
     //Método que recoge el texto del editText de cada imagen
