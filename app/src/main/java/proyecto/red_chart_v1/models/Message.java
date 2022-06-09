@@ -9,7 +9,8 @@ public class Message {
     private String message;           //mensaje
     private String status;            //Para saber si el mensaje se ha visto o no (Estado del mensaje)
     private String url;               //Obtiene las url de las imagenes/archivos
-    private String type;              //
+    private String type;              //Tipo texto|imagen|documento
+    private String fileName;          //Nombre del documento
     private long timestamp;           //Fecha de cuando se envió el mensaje
 
 
@@ -18,7 +19,7 @@ public class Message {
     }
 
     //Contructor con todas las variables
-    public Message(String id, String idSender, String idReceiver, String idChat, String message, String status, String url, String type, long timestamp) {
+    public Message(String id, String idSender, String idReceiver, String idChat, String message, String status, String url, String type, String fileName, long timestamp) {
         this.id = id;
         this.idSender = idSender;
         this.idReceiver = idReceiver;
@@ -27,6 +28,7 @@ public class Message {
         this.status = status;
         this.url = url;
         this.type = type;
+        this.fileName = fileName;
         this.timestamp = timestamp;
     }
 
@@ -96,6 +98,14 @@ public class Message {
         this.type = type;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }
@@ -103,6 +113,7 @@ public class Message {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
 
     @Override
     public String toString() {

@@ -59,6 +59,14 @@
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="10dp"/>
 
+            <ImageView
+                android:id="@+id/imageViewSelectFiles"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic__file"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="40dp"/>
+
         </FrameLayout>
 
         <ImageView

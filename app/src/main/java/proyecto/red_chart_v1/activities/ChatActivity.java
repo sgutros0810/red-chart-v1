@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -50,6 +53,7 @@ import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ChatsProvider;
+import proyecto.red_chart_v1.providers.FilesProvider;
 import proyecto.red_chart_v1.providers.MessagesProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
 import proyecto.red_chart_v1.utils.AppBackgroundHelper;
@@ -64,9 +68,11 @@ public class ChatActivity extends AppCompatActivity {
     AuthProvider mAuthProvider;
     ChatsProvider mChatsProvider;
     MessagesProvider mMessagesProvider;
+    FilesProvider mFilesProvider;
 
     ImageView mImageViewBack;
     ImageView mImageViewSend;
+    ImageView mImageViewSelectFiles;
     TextView mTextViewUsername;
     TextView mTextViewOnline;
     CircleImageView mCircleImageView;
@@ -88,6 +94,10 @@ public class ChatActivity extends AppCompatActivity {
     Options mOptions;
     ArrayList<String> mReturnValue = new ArrayList<>();
 
+    final int ACTION_FILE = 2;
+
+    ArrayList<Uri> mFileList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +110,11 @@ public class ChatActivity extends AppCompatActivity {
         mAuthProvider = new AuthProvider();
         mChatsProvider = new ChatsProvider();
         mMessagesProvider = new MessagesProvider();
+        mFilesProvider = new FilesProvider();
 
         mEditTextMessage = findViewById(R.id.editTextMessage);
         mImageViewSend = findViewById(R.id.imageViewSend);
+        mImageViewSelectFiles = findViewById(R.id.imageViewSelectFiles);
         mImageViewSelectPictures = findViewById(R.id.imageViewSelectPictures);
         mRecyclerViewMessages = findViewById(R.id.recyclerViewMessages);
 
@@ -154,7 +166,46 @@ public class ChatActivity extends AppCompatActivity {
                 startPix();
             }
         });
+
+        //Si pincha en el icono de 'imageViewSelectFiles'
+        mImageViewSelectFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectFiles();
+            }
+        });
     }
+
+    //Metodo que trata de obtener los tipos de archivos que son validos para subir en el 'ChatActivity'
+    private void selectFiles() {
+        String[] mimeTypes =
+                {"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
+                        "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+                        "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+                        "text/plain",
+                        "application/pdf",
+                        "application/zip"};
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.setType(mimeTypes.length == 1 ? mimeTypes[0] : "*/*");
+            if (mimeTypes.length > 0) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+            }
+        } else {
+            String mimeTypesStr = "";
+            for (String mimeType : mimeTypes) {
+                mimeTypesStr += mimeType + "|";
+            }
+            intent.setType(mimeTypesStr.substring(0,mimeTypesStr.length() - 1));
+        }
+        startActivityForResult(Intent.createChooser(intent,"ChooseFile"), ACTION_FILE);
+    }
+
+
 
     private void setWriting() {
         //Eventos de editText
@@ -242,6 +293,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+
+
+
     //Crea el mensaje del usuario1
     private void createMessage() {
         String textMessage = mEditTextMessage.getText().toString();         //obtiene el texto que envió el usuario
@@ -281,6 +335,8 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+
+
     //Método que comprueba si existe un chat con esos ids (el usuario y el usuario con el que chatea)
     private void checkIfExistChat() {
         mChatsProvider.getChatByUser1AndUser2(mExtraIdUser, mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -302,6 +358,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     //Método
     private void getChatInfo() {
@@ -364,6 +422,8 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+
+
     //Método que actualiza el estado del mensaje a "VISTO"
     private void updateStatus() {
         //El metodo 'getMessagesByNotRead()', retorna los documentos con el campo 'idChat' y 'status' con los valores establecidos
@@ -386,6 +446,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void getMessagesByChat() {
         //Recoge la información de la clase MessagesProviders
@@ -532,6 +594,35 @@ public class ChatActivity extends AppCompatActivity {
             intent.putExtra("idReceiver", mExtraIdUser);   //Envía el id del usuario que recibe el mensaje
             startActivity(intent);
         }
+
+        //Si el usuario hizo la accion de seleccionar un archivo
+        if(requestCode == ACTION_FILE && resultCode == RESULT_OK){
+            mFileList = new ArrayList<>();      //Inicializamos el array
+
+            ClipData clipData = data.getClipData();
+
+            //Si selecciona un único archivo
+            if(clipData == null){
+                Uri uri = data.getData();
+                mFileList.add(uri);
+            }
+            //Si selecciona varios archivos
+            else {
+                int count = clipData.getItemCount();       //Cuenta cuantos archivos selecciono
+
+                //Captura los elementos seleccionados por el usuario
+                for (int i = 0; i < count; i++) {
+                    Uri uri = clipData.getItemAt(i).getUri();
+                    mFileList.add(uri);
+                }
+            }
+
+            //Recibe como parametro la activity, los archivos, el id chat y el id de usuario
+            mFilesProvider.saveFiles(ChatActivity.this, mFileList, mExtraidChat, mExtraIdUser );
+
+
+        }
+
     }
 
     //Seleccion de Permisos de camara y galeria
