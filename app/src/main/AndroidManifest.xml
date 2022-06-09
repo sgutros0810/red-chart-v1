@@ -22,7 +22,8 @@
         tools:replace="android:theme">
         <activity
             android:name=".activities.ConfirmImageSendActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false" />

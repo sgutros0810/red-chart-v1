@@ -8,25 +8,30 @@ public class Message {
     private String idChat;            //Id del chat
     private String message;           //mensaje
     private String status;            //Para saber si el mensaje se ha visto o no (Estado del mensaje)
+    private String url;               //Obtiene las url de las imagenes/archivos
+    private String type;              //
     private long timestamp;           //Fecha de cuando se envió el mensaje
+
 
     //Constructor vacio
     public Message() {
     }
 
     //Contructor con todas las variables
-    public Message(String id, String idSender, String idReceiver, String idChat, String message, String status, long timestamp) {
+    public Message(String id, String idSender, String idReceiver, String idChat, String message, String status, String url, String type, long timestamp) {
         this.id = id;
         this.idSender = idSender;
         this.idReceiver = idReceiver;
         this.idChat = idChat;
         this.message = message;
         this.status = status;
+        this.url = url;
+        this.type = type;
         this.timestamp = timestamp;
     }
 
-    //Getters y setters
 
+    //Getters y setters
     public String getId() {
         return id;
     }
@@ -75,11 +80,36 @@ public class Message {
         this.status = status;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "idChat='" + idChat + '\'' +
+                ", message='" + message + '\'' +
+                ", url='" + url + '\'' +
+                '}';
     }
 }

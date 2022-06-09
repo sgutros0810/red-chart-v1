@@ -255,7 +255,9 @@ public class ChatActivity extends AppCompatActivity {
             message.setIdReceiver(mExtraIdUser);            //El usuario2 es el que recibe el mensaje de texto
             message.setMessage(textMessage);                //Mensaje que envia
             message.setStatus("ENVIADO");                   //Estado del mensaje
+            message.setType("texto");                       //Tipo de mensaje -> 'texto'
             message.setTimestamp(new Date().getTime());     //Fecha de cuando envia el mensaje
+
 
             //Si se ejecuta correctamente
             mMessagesProvider.create(message).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -525,7 +527,9 @@ public class ChatActivity extends AppCompatActivity {
             mReturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);     //Retorna las imagenes que hemos seleccionado
 
             Intent intent = new Intent(ChatActivity.this, ConfirmImageSendActivity.class);       //Pasamos el contexto y a la actividad que queremos ir
-            intent.putExtra("data", mReturnValue);   //Hace que establezca un 'dato' -> (Todas las rutas de las imagenes seleccionadas)  que envia a la clase 'ConfirmImageSendActivity.class'
+            intent.putExtra("data", mReturnValue);      //Hace que establezca un 'dato' -> (Todas las rutas de las imagenes seleccionadas)  que envia a la clase 'ConfirmImageSendActivity.class'
+            intent.putExtra("idChat", mExtraidChat);   //Envía el id del chat
+            intent.putExtra("idReceiver", mExtraIdUser);   //Envía el id del usuario que recibe el mensaje
             startActivity(intent);
         }
     }

@@ -50,7 +50,7 @@ public class OptionsPagerAdapter  extends FragmentStatePagerAdapter implements C
     //Obtiene las posiciones de las imagenes seleccionadas y muestra las imagenes en el fragment
     @Override
     public Fragment getItem(int position) {
-        return ImagePagerFragment.newInstance(position, data.get(position));
+        return ImagePagerFragment.newInstance(position, data.get(position), data.size());
     }
 
     @Override
