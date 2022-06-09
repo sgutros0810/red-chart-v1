@@ -59,6 +59,17 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         holder.textViewMessage.setText(message.getMessage());   //Obtenemos el mensaje y lo muestra
         holder.textViewDate.setText(RelativeTime.timeFormatAMPM(message.getTimestamp(),context));  //Muestra la fecha personalizada
 
+        if (message.getUrl() != null){
+            holder.imageMessage.setVisibility(View.VISIBLE);                                                          //Mostrar la imagen con un mensaje
+
+            //Libreria que muestra la imagen a nuestra aplicacion mediante una url
+            Picasso.get().load(message.getUrl()).into(holder.imageMessage);
+
+        }else{
+            holder.imageMessage.setVisibility(View.GONE);                                                          //Ocultar la imagen con un mensaje
+
+        }
+
         //Si nosotros enviado el mensaje
         if(message.getIdSender().equals(authProvider.getId())){
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -124,6 +135,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         TextView textViewMessage;
         TextView textViewDate;
         ImageView imageViewCheck;
+        ImageView imageMessage;
         LinearLayout linearLayoutMessage;
 
         View myView;
@@ -137,6 +149,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             textViewMessage = view.findViewById(R.id.textViewMessage);
             textViewDate = view.findViewById(R.id.textViewDate);
             imageViewCheck= view.findViewById(R.id.imageViewCheck);
+            imageMessage= view.findViewById(R.id.imageMessage);
             linearLayoutMessage = view.findViewById(R.id.linearLayoutMessage);
         }
     }
