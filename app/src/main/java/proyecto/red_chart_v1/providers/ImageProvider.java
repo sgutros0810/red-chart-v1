@@ -49,7 +49,7 @@ public class ImageProvider {
         for (int i = 0; i < messages.size(); i++) {
 
             File file = CompressorBitmapImage.reduceImageSize(new File(messages.get(i).getUrl()));  //Reduce el tamaño de la imagen seleccionada y la guarda en la BD
-            uri[i] = Uri.parse("File://" + file.getPath());
+            uri[i] = Uri.parse("file://" + file.getPath());
 
             final StorageReference ref = mStorage.child(uri[i].getLastPathSegment());                     //Ruta donde se almacenan las imagenes
             //Almacena cada una de las en la BD
