@@ -1,8 +1,10 @@
 package proyecto.red_chart_v1.adapters;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
@@ -58,17 +62,6 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Message message) {
         holder.textViewMessage.setText(message.getMessage());   //Obtenemos el mensaje y lo muestra
         holder.textViewDate.setText(RelativeTime.timeFormatAMPM(message.getTimestamp(),context));  //Muestra la fecha personalizada
-
-        if (message.getUrl() != null){
-            holder.imageMessage.setVisibility(View.VISIBLE);                                                          //Mostrar la imagen con un mensaje
-
-            //Libreria que muestra la imagen a nuestra aplicacion mediante una url
-            Picasso.get().load(message.getUrl()).into(holder.imageMessage);
-
-        }else{
-            holder.imageMessage.setVisibility(View.GONE);                                                          //Ocultar la imagen con un mensaje
-
-        }
 
         //Si nosotros enviado el mensaje
         if(message.getIdSender().equals(authProvider.getId())){
@@ -113,6 +106,70 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             holder.imageViewCheck.setVisibility(View.GONE);                                                                 //Ocultar el estado del check
         }
 
+        showImage(holder, message);
+        showDocument(holder, message);
+        openMessage(holder, message);
+    }
+
+
+
+    //Método para descargar un archivo
+    private void openMessage(ViewHolder holder, Message message) {
+        holder.myView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //si el mensaje tiene el tipo documento
+                if(message.getType().equals("documento")){
+                    File file = new File(context.getExternalFilesDir(null), "file");
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(message.getUrl()))  //URL DEL ARCHIVO QUE QUEREMOS DESCARGAR
+                            .setTitle(message.getMessage())        //Nombre del archivo
+                            .setDescription("Download")
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                            .setDestinationUri(Uri.fromFile(file))
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true);
+
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    downloadManager.enqueue(request);  //Ejecuta la descarga
+
+                }
+            }
+        });
+    }
+
+    //Método que muestra el documento
+    private void showDocument(ViewHolder holder, Message message) {
+        if(message.getType().equals("documento")){
+            if(message.getUrl() != null ){
+                if(!message.getUrl().equals("")){
+                    holder.linearLayoutDocument.setVisibility(View.VISIBLE);
+                    holder.imageMessage.setVisibility(View.GONE);
+                } else {
+                    holder.linearLayoutDocument.setVisibility(View.GONE);
+                    holder.imageMessage.setVisibility(View.GONE);
+                }
+            } else {
+                holder.linearLayoutDocument.setVisibility(View.GONE);
+                holder.imageMessage.setVisibility(View.GONE);
+            }
+        } else {
+            holder.linearLayoutDocument.setVisibility(View.GONE);
+            holder.imageMessage.setVisibility(View.GONE);
+        }
+    }
+
+
+    //Método que muestra la imagen
+    private void showImage(ViewHolder holder, Message message) {
+        if (message.getUrl() != null){
+            holder.imageMessage.setVisibility(View.VISIBLE);                                                          //Mostrar la imagen con un mensaje
+
+            //Libreria que muestra la imagen a nuestra aplicacion mediante una url
+            Picasso.get().load(message.getUrl()).into(holder.imageMessage);
+
+        }else{
+            holder.imageMessage.setVisibility(View.GONE);                                                          //Ocultar la imagen con un mensaje
+        }
     }
 
 
@@ -137,6 +194,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         ImageView imageViewCheck;
         ImageView imageMessage;
         LinearLayout linearLayoutMessage;
+        LinearLayout linearLayoutDocument;
 
         View myView;
 
@@ -151,6 +209,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             imageViewCheck= view.findViewById(R.id.imageViewCheck);
             imageMessage= view.findViewById(R.id.imageMessage);
             linearLayoutMessage = view.findViewById(R.id.linearLayoutMessage);
+            linearLayoutDocument = view.findViewById(R.id.linearLayoutDocument);
         }
     }
 
