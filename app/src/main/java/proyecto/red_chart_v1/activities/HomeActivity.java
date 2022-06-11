@@ -78,6 +78,12 @@ public class HomeActivity extends AppCompatActivity {
         mUsersProvider = new UsersProvider();
         mAuthProvider = new AuthProvider();
 
+        createToken();
+    }
+
+    //Método que crea el token al usuario
+    private void createToken() {
+        mUsersProvider.createToken(mAuthProvider.getId());
     }
 
     //Cuando esta dentro de la aplicación

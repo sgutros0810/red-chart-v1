@@ -1,10 +1,13 @@
 package proyecto.red_chart_v1.providers;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -79,4 +82,18 @@ public class UsersProvider {
         return mCollection.document(idUser).update(map);
     }
 
+    //Método que no retorna nada, crea el token por usuario
+    public void createToken(final String idUser) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                //Cuando termina de ejecutar correctamente, actualiza el campo 'token' en la BD
+                String token = instanceIdResult.getToken();       //crea el Token
+                Map<String, Object> map = new HashMap<>();
+                map.put("token", token);
+
+                mCollection.document(idUser).update(map);
+            }
+        });
+    }
 }

@@ -7,6 +7,7 @@ public class User {
     private String phone;       // Teléfono del usuario
     private String image;       // Imagen de perfil del usuario
     private String info;        //info del perfil
+    private String token;       //token para las notificaciones
     private long lastConnect;   //Última vez que se conecto
     private boolean online;     //Esta 'En linea'
 
@@ -16,12 +17,13 @@ public class User {
     }
 
     // Contructor con todas las variables
-    public User(String id, String username, String phone, String image, String info, long lastConnect, boolean online) {
+    public User(String id, String username, String phone, String image, String info, String token, long lastConnect, boolean online) {
         this.id = id;
         this.username = username;
         this.phone = phone;
         this.image = image;
         this.info = info;
+        this.token = token;
         this.lastConnect = lastConnect;
         this.online = online;
     }
@@ -65,6 +67,14 @@ public class User {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public long getLastConnect() {

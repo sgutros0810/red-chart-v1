@@ -11,6 +11,7 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
+
     }
 
     //Método que sirve para recibir los datos que se envía en la notificación
