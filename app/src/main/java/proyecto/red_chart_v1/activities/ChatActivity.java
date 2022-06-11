@@ -98,7 +98,8 @@ public class ChatActivity extends AppCompatActivity {
 
     ListenerRegistration mListenerChat;
 
-    User mUser;
+    User mUserReceiver;
+    User mUserSend;
 
     //Variables para la liberia Pix
     Options mOptions;
@@ -150,7 +151,9 @@ public class ChatActivity extends AppCompatActivity {
         showChatToolbar(R.layout.chat_toolbar);
 
         //Recoge los datos del usuario seleccionado
-        getUserInfo();
+        getUserReceiverInfo();
+
+        getUserSend();
 
         //comprueba si existe un chat
         checkIfExistChat();
@@ -355,9 +358,11 @@ public class ChatActivity extends AppCompatActivity {
         data.put("title", "MENSAJE");                                                //Titulo
         data.put("body", message);                                                      //Body el mensaje que recibimos
         data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
+        data.put("usernameReceiver", mUserReceiver.getUsername());                      //Nombre del usuario que recibe
+        data.put("usernameSender", mUserSend.getUsername());                            //Nombre del usuario que envia
 
         //Envia la notificacion al usuario que recibe el mensaje
-        mNotificationProvider.send(ChatActivity.this, mUser.getToken(), data);
+        mNotificationProvider.send(ChatActivity.this, mUserReceiver.getToken(), data);
     }
 
 
@@ -405,15 +410,15 @@ public class ChatActivity extends AppCompatActivity {
                                 //Si el id es diferente al usuario principal pone el estado a 'Escribiendo...'
                                 if(!mChat.getWriting().equals(mAuthProvider.getId())){
                                     mTextViewOnline.setText("Escribiendo...");
-                                } else if(mUser != null) {
+                                } else if(mUserReceiver != null) {
 
                                     //Si el usuario se encuentra 'En linea' muestra un texto
-                                    if(mUser.isOnline()){
+                                    if(mUserReceiver.isOnline()){
                                         mTextViewOnline.setText("En línea");
                                         //Muestra la ultima vez que se conectó
                                     } else {
                                         //Variable que contiene la ultima vez que se conecto de la app
-                                        String relativeTime = RelativeTime.getTimeAgo(mUser.getLastConnect(), ChatActivity.this);
+                                        String relativeTime = RelativeTime.getTimeAgo(mUserReceiver.getLastConnect(), ChatActivity.this);
                                         //Muestra la fecha
                                         mTextViewOnline.setText(relativeTime);
                                     }
@@ -423,17 +428,17 @@ public class ChatActivity extends AppCompatActivity {
                                 }
 
 
-                            } else if(mUser != null) {
+                            } else if(mUserReceiver != null) {
 
                                 //Si el usuario se encuentra 'En linea' muestra un texto
-                                if (mUser.isOnline()) {
+                                if (mUserReceiver.isOnline()) {
 
                                     mTextViewOnline.setText("En línea");
 
                                     //Muestra la ultima vez que se conectó
                                 } else {
                                     //Variable que contiene la ultima vez que se conecto de la app
-                                    String relativeTime = RelativeTime.getTimeAgo(mUser.getLastConnect(), ChatActivity.this);
+                                    String relativeTime = RelativeTime.getTimeAgo(mUserReceiver.getLastConnect(), ChatActivity.this);
 
                                     //Muestra la fecha
                                     mTextViewOnline.setText(relativeTime);
@@ -540,8 +545,20 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    //Muestra la informacion del usuario
-    private void getUserInfo() {
+
+    public void getUserSend() {
+        mUsersProvider.getUserInfo(mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    mUserSend = documentSnapshot.toObject(User.class);
+                }
+            }
+        });
+    }
+
+    //Muestra la informacion del usuario que recibe
+    private void getUserReceiverInfo() {
         mUsersProvider.getUserInfo(mExtraIdUser).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
@@ -550,25 +567,25 @@ public class ChatActivity extends AppCompatActivity {
 
                     //si existe en la base de datos el documentsnapshot
                     if(documentSnapshot.exists()){
-                        mUser = documentSnapshot.toObject(User.class);              //Obtiene la informacion del usuario seleccionado
-                        mTextViewUsername.setText(mUser.getUsername());
+                        mUserReceiver = documentSnapshot.toObject(User.class);              //Obtiene la informacion del usuario seleccionado
+                        mTextViewUsername.setText(mUserReceiver.getUsername());
 
                         //Si la imagen no es null ni vacio
-                        if(mUser.getImage() != null){
-                            if(!mUser.getImage().equals("")){
-                                Picasso.get().load(mUser.getImage()).into(mCircleImageView);
+                        if(mUserReceiver.getImage() != null){
+                            if(!mUserReceiver.getImage().equals("")){
+                                Picasso.get().load(mUserReceiver.getImage()).into(mCircleImageView);
                             }
                         }
 
                         //Si el usuario se encuentra 'En linea' muestra un texto
-                        if(mUser.isOnline()){
+                        if(mUserReceiver.isOnline()){
 
                             mTextViewOnline.setText("En línea");
 
                         //Muestra la ultima vez que se conectó
                         } else {
                             //Variable que contiene la ultima vez que se conecto de la app
-                            String relativeTime = RelativeTime.getTimeAgo(mUser.getLastConnect(), ChatActivity.this);
+                            String relativeTime = RelativeTime.getTimeAgo(mUserReceiver.getLastConnect(), ChatActivity.this);
 
                             //Muestra la fecha
                             mTextViewOnline.setText(relativeTime);

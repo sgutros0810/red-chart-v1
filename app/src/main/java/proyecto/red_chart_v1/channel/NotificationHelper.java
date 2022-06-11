@@ -71,16 +71,16 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     //Método de configuracion de estilos de la notificacion
-    public NotificationCompat.Builder getNotificationMessage (String message) {
+    public NotificationCompat.Builder getNotificationMessage (String usernameReceiver, String usernameSender, String message) {
         //Persona que envía el mensaje
         Person sendPerson = new Person.Builder()
-                .setName("Jonnathan")                                                                         //Nombre del usuario que envia el mensaje
+                .setName(usernameSender)                                                                        //Nombre del usuario que envia el mensaje
                 .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
                 .build();                                                                                       //Crea el objeto
 
         //Persona que recibe el mensaje
         Person receiverPerson = new Person.Builder()
-                .setName("Camila")                                                                         //Nombre del usuario que envia el mensaje
+                .setName(usernameReceiver)                                                                      //Nombre del usuario que envia el mensaje
                 .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
                 .build();
 

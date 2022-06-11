@@ -38,7 +38,7 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
             //Si el titulo es igual a 'MENSAJE'
             if (title.equals("MENSAJE")) {
-                showNotificationMessage(body, idNotification);
+                showNotificationMessage(data);
             }
             else {
                 showNotification(title, body, idNotification);
@@ -58,12 +58,23 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
     }
 
     //Método que muestra el contenido de la notificación
-    private void showNotificationMessage(String message, String idNotification) {
+    private void showNotificationMessage(Map<String, String> data) {
+        String body = data.get("body");                                 //Captura el valor del body
+        String idNotification = data.get("idNotification");             //Captura el valor del idNotification
+        String usernameSender = data.get("usernameSender");             //Captura el valor del usernameSender
+        String usernameReceiver = data.get("usernameReceiver");         //Captura el valor del usernameReceiver
+
         NotificationHelper helper = new NotificationHelper(getBaseContext());
-        NotificationCompat.Builder builder = helper.getNotificationMessage(message);
+        NotificationCompat.Builder builder = helper.getNotificationMessage(usernameReceiver, usernameSender, body);
 
         int id = Integer.parseInt(idNotification);
+
+        //Pruebas
         Log.d("NOTIFICACION", "ID: " + id);
+        Log.d("NOTIFICACION", "usernameSender: " + usernameSender);
+        Log.d("NOTIFICACION", "usernameReceiver: " + usernameReceiver);
+
+
         helper.getManager().notify(id, builder.build());
     }
 
