@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import proyecto.red_chart_v1.R;
@@ -72,18 +73,37 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     //Método de configuracion de estilos de la notificacion
-    public NotificationCompat.Builder getNotificationMessage (Message[] messages,String usernameReceiver, String usernameSender) {
+    public NotificationCompat.Builder getNotificationMessage (
+            Message[] messages,
+            String usernameReceiver,
+            String usernameSender,
+            Bitmap bitmapReceiver
+    ) {
         //Persona que envía el mensaje
         Person sendPerson = new Person.Builder()
                 .setName(usernameSender)                                                                        //Nombre del usuario que envia el mensaje
                 .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
                 .build();                                                                                       //Crea el objeto
 
-        //Persona que recibe el mensaje
-        Person receiverPerson = new Person.Builder()
-                .setName(usernameReceiver)                                                                      //Nombre del usuario que envia el mensaje
-                .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
-                .build();
+        Person receiverPerson = null;
+
+        //Si el usuario no tiene ninguna imagen de perfil
+        if (bitmapReceiver == null) {
+
+            //Persona que recibe el mensaje
+            receiverPerson = new Person.Builder()
+                    .setName(usernameReceiver)                                                                      //Nombre del usuario que envia el mensaje
+                    .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
+                    .build();
+
+        } else {
+
+            //Persona que recibe el mensaje
+            receiverPerson = new Person.Builder()
+                    .setName(usernameReceiver)                                                                      //Nombre del usuario que envia el mensaje
+                    .setIcon(IconCompat.createWithBitmap(bitmapReceiver))   //Icono de la persona
+                    .build();
+        }
 
         //Persona que recibe la notificacion se le añade el estilo
         NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(receiverPerson);

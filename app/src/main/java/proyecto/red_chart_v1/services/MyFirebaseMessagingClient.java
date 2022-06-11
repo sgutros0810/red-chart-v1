@@ -1,5 +1,9 @@
 package proyecto.red_chart_v1.services;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,6 +12,8 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.Map;
 import java.util.Random;
@@ -40,7 +46,7 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
             //Si el titulo es igual a 'MENSAJE'
             if (title.equals("MENSAJE")) {
-                showNotificationMessage(data);
+                getImageReceiver(data);
             }
             else {
                 showNotification(title, body, idNotification);
@@ -59,21 +65,63 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         helper.getManager().notify(id, builder.build());
     }
 
+
+    private void getImageReceiver(final Map<String, String> data){
+        final String imageReceiver = data.get("imageReceiver");               //Obtiene la imagen
+
+        Log.d("NOTIFICACION", "ID: " + imageReceiver);
+
+        //Si tiene la imagen por defecto o vacio
+        if(imageReceiver == null || imageReceiver.equals("")){
+            showNotificationMessage(data, null);          //Muestra la notificacion y la imagen (url) por defecto
+            return;
+        }
+
+
+        new Handler(Looper.getMainLooper())
+                .post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Picasso.get().load(imageReceiver).into(new Target() {
+
+                            //Cuando la imagen (url) se haya cargado correctamente, nos devuelve un bitmap
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                showNotificationMessage(data, bitmap);          //Muestra la notificacion y la imagen (url)
+                            }
+
+                            //En caso de que no exista en la bd y no se pudo cargar
+                            @Override
+                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                                showNotificationMessage(data, null);          //Muestra la notificación, pero el bitmap (imagen) = null
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
+                    }
+                });
+
+
+    }
+
     //Método que muestra el contenido de la notificación
-    private void showNotificationMessage(Map<String, String> data) {
+    private void showNotificationMessage(Map<String, String> data, Bitmap bitmapReceiver) {
         //String body = data.get("body");                               //Captura el valor del body
         String idNotification = data.get("idNotification");             //Captura el valor del idNotification
         String usernameSender = data.get("usernameSender");             //Captura el valor del usernameSender
         String usernameReceiver = data.get("usernameReceiver");         //Captura el valor del usernameReceiver
         String menssagesJSON = data.get("menssagesJSON");               //Captura el valor de un String de los ultimos 5 mensajes no leidos
 
-
         Gson gson = new Gson();
         //Convertimos el String a un Array de 'Message'
         Message[] messages = gson.fromJson(menssagesJSON, Message[].class);
 
         NotificationHelper helper = new NotificationHelper(getBaseContext());
-        NotificationCompat.Builder builder = helper.getNotificationMessage(messages, usernameReceiver, usernameSender);
+
+        NotificationCompat.Builder builder = helper.getNotificationMessage(messages, usernameReceiver, usernameSender, bitmapReceiver);
 
         int id = Integer.parseInt(idNotification);
 

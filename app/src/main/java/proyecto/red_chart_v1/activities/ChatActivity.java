@@ -389,6 +389,7 @@ public class ChatActivity extends AppCompatActivity {
         data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
         data.put("usernameReceiver", mUserReceiver.getUsername());                      //Nombre del usuario que recibe
         data.put("usernameSender", mUserSend.getUsername());                            //Nombre del usuario que envia
+        data.put("imageReceiver", mUserSend.getImage());                                //Imagen de perfil del usuario
 
         Gson gson = new Gson();
         String menssagesJSON = gson.toJson(messages);                                      //Convierto el array 'messages' a un JSON
