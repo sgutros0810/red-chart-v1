@@ -352,7 +352,7 @@ public class ChatActivity extends AppCompatActivity {
     private void sendNotification(String message) {
         //Envía la notificacion //saber el token del usuario que le envia la notificación
         Map<String, String> data = new HashMap<>();                                        //Variable que sirve para transmitir lo que se muestre en la app
-        data.put("title", "NUEVO MENSAJE");                                          //Titulo
+        data.put("title", "MENSAJE");                                                //Titulo
         data.put("body", message);                                                      //Body el mensaje que recibimos
         data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
 

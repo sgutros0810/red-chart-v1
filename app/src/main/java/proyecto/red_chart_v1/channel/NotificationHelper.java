@@ -11,6 +11,10 @@ import proyecto.red_chart_v1.R;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
+
+import java.util.Date;
 
 public class NotificationHelper extends ContextWrapper {
 
@@ -54,7 +58,7 @@ public class NotificationHelper extends ContextWrapper {
         return manager;
     }
 
-    //Configuracion de la notificacion de la app
+    //Metodo de Configuracion de la notificacion de la app
     public NotificationCompat.Builder getNotification(String title, String body) {
 
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
@@ -66,6 +70,38 @@ public class NotificationHelper extends ContextWrapper {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(body).setBigContentTitle(title));   //Estilo
     }
 
+    //Método de configuracion de estilos de la notificacion
+    public NotificationCompat.Builder getNotificationMessage (String message) {
+        //Persona que envía el mensaje
+        Person sendPerson = new Person.Builder()
+                .setName("Jonnathan")                                                                         //Nombre del usuario que envia el mensaje
+                .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
+                .build();                                                                                       //Crea el objeto
+
+        //Persona que recibe el mensaje
+        Person receiverPerson = new Person.Builder()
+                .setName("Camila")                                                                         //Nombre del usuario que envia el mensaje
+                .setIcon(IconCompat.createWithResource(getApplicationContext(), R.drawable.ic_perfil_person))   //Icono de la persona
+                .build();
+
+        //Persona que recibe la notificacion se le añade el estilo
+        NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(receiverPerson);
+
+        //Configuracion del estilo de notificacion
+        NotificationCompat.MessagingStyle.Message messageNotification = new NotificationCompat.MessagingStyle.Message(
+                message,                 //Mensaje
+                new Date().getTime(),    //Cuando se envio el mensaje
+                receiverPerson          //Persona que recibe el mensaje
+        );
+
+        //Añade el mensaje
+        messagingStyle.addMessage(messageNotification);
+
+        return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_icono_round)      //Icono por defecto
+                .setStyle(messagingStyle);                  //Se aplica el estilo creado
+
+    }
 
 
 }

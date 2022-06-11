@@ -35,7 +35,14 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
         //Si el titulo no es nulo (la notificaión tiene al menos un titulo)
         if (title != null) {
-            showNotification(title, body, idNotification);
+
+            //Si el titulo es igual a 'MENSAJE'
+            if (title.equals("MENSAJE")) {
+                showNotificationMessage(body, idNotification);
+            }
+            else {
+                showNotification(title, body, idNotification);
+            }
         }
     }
 
@@ -46,7 +53,17 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         NotificationCompat.Builder builder = helper.getNotification(title, body);
 
         int id = Integer.parseInt(idNotification);  //Pasamos el String a un int
-        //Log.d("NOTIFICACION", "ID :" + id);
+        Log.d("NOTIFICACION", "ID :" + id);
+        helper.getManager().notify(id, builder.build());
+    }
+
+    //Método que muestra el contenido de la notificación
+    private void showNotificationMessage(String message, String idNotification) {
+        NotificationHelper helper = new NotificationHelper(getBaseContext());
+        NotificationCompat.Builder builder = helper.getNotificationMessage(message);
+
+        int id = Integer.parseInt(idNotification);
+        Log.d("NOTIFICACION", "ID: " + id);
         helper.getManager().notify(id, builder.build());
     }
 
