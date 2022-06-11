@@ -1,5 +1,7 @@
 package proyecto.red_chart_v1.services;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
@@ -29,20 +31,23 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         Map<String, String> data = remoteMessage.getData();             //OBTIENE TODA LA INFORMACIÓN QUE ENVIA LA NOTIFICACION
         String title = data.get("title");                               //Captura el valor del titulo
         String body = data.get("body");                                 //Captura el valor del body
+        String idNotification = data.get("idNotification");             //Captura el valor del idNotification
 
         //Si el titulo no es nulo (la notificaión tiene al menos un titulo)
         if (title != null) {
-            showNotification(title, body);
+            showNotification(title, body, idNotification);
         }
     }
 
+
     //Método que muestra la notificación
-    private void showNotification(String title, String body) {
+    private void showNotification(String title, String body, String idNotification) {
         NotificationHelper helper = new NotificationHelper(getBaseContext());
         NotificationCompat.Builder builder = helper.getNotification(title, body);
-        Random random = new Random();
-        int n = random.nextInt(10000);
-        helper.getManager().notify(n, builder.build());
+
+        int id = Integer.parseInt(idNotification);  //Pasamos el String a un int
+        //Log.d("NOTIFICACION", "ID :" + id);
+        helper.getManager().notify(id, builder.build());
     }
 
 }

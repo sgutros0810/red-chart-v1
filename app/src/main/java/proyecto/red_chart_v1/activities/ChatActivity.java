@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -104,8 +105,9 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<String> mReturnValue = new ArrayList<>();
 
     final int ACTION_FILE = 2;
-
     ArrayList<Uri> mFileList;
+
+    Chat mChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,38 +351,13 @@ public class ChatActivity extends AppCompatActivity {
     //Metodo que envia la notificacion cuando cree el mensaje
     private void sendNotification(String message) {
         //Envía la notificacion //saber el token del usuario que le envia la notificación
-        Map<String, String> data = new HashMap<>();                                       //Variable que sirve para transmitir lo que se muestre en la app
-        data.put("title", "NUEVO MENSAJE");                                         //Titulo
+        Map<String, String> data = new HashMap<>();                                        //Variable que sirve para transmitir lo que se muestre en la app
+        data.put("title", "NUEVO MENSAJE");                                          //Titulo
         data.put("body", message);                                                      //Body el mensaje que recibimos
-        FCMBody body = new FCMBody(mUser.getToken(), "high", "4500s", data);    //EL TOKEN DEL USUARIO RECIBE LA NOTIFICACION, PRIORIDAD DEL MENSAJE, TIEMPO QUE SE MUESTRA Y LA INFORMACION QUE ENVIAMOS
+        data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
 
-        //Envia la notificacion
-        mNotificationProvider.sendNotification(body).enqueue(new Callback<FCMResponse>() {
-            //Si lo envia
-            @Override
-            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-                //Si el cuerpo de la notificacion esta null
-                if (response.body() != null) {
-                    //Si se envia correctamente
-                    if (response.body().getSuccess() == 1) {
-                        Toast.makeText(ChatActivity.this, "La notificacion se envio correctamente", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(ChatActivity.this, "La notificacion no se pudo enviar", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else {
-                    Toast.makeText(ChatActivity.this, "no hubo respuesta del servidor", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            //Si falla
-            @Override
-            public void onFailure(Call<FCMResponse> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, "Fallo la peticion con retrofit: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        //Envia la notificacion al usuario que recibe el mensaje
+        mNotificationProvider.send(ChatActivity.this, mUser.getToken(), data);
     }
 
 
@@ -419,14 +396,14 @@ public class ChatActivity extends AppCompatActivity {
                     //Validacion de si existe
                     if(documentSnapshot.exists()) {
                         //Retorna un chat
-                        Chat chat = documentSnapshot.toObject(Chat.class);  //Obtiene la información y lo transforma a un objeto
+                        mChat = documentSnapshot.toObject(Chat.class);  //Obtiene la información y lo transforma a un objeto
 
                         //Validación de que la informacion obtenida no sea null y no este vacio
-                        if(chat.getWriting() != null){
-                            if(!chat.getWriting().equals("")){
+                        if(mChat.getWriting() != null){
+                            if(!mChat.getWriting().equals("")){
 
                                 //Si el id es diferente al usuario principal pone el estado a 'Escribiendo...'
-                                if(!chat.getWriting().equals(mAuthProvider.getId())){
+                                if(!mChat.getWriting().equals(mAuthProvider.getId())){
                                     mTextViewOnline.setText("Escribiendo...");
                                 } else if(mUser != null) {
 
@@ -533,23 +510,28 @@ public class ChatActivity extends AppCompatActivity {
 
     //Método que crea el chat
     private void createChat() {
-        Chat chat = new Chat();
+
+        Random random = new Random();
+        int n = random.nextInt(100000);      //Genera un numero aleatorio entre 0 y 10000
+
+        mChat = new Chat();
         //Establece la informacion por defecto
-        chat.setId(mAuthProvider.getId() + mExtraIdUser); //Obtengo el id del usuario + el id del otro usuario
-        chat.setTimestamp(new Date().getTime());          //Muestra la fecha exacta que se creó el chat de tipo long
-        chat.setNumberMessages(0);                        //Se crea el campo 'numberMessages' a 0
-        chat.setWriting("");
+        mChat.setId(mAuthProvider.getId() + mExtraIdUser); //Obtengo el id del usuario + el id del otro usuario
+        mChat.setTimestamp(new Date().getTime());          //Muestra la fecha exacta que se creó el chat de tipo long
+        mChat.setNumberMessages(0);                        //Se crea el campo 'numberMessages' a 0
+        mChat.setWriting("");
+        mChat.setIdNotification(n);                         //Se crea un campo id con un número aleatorio para las notificaciones
 
         ArrayList<String> ids = new ArrayList<>();
         ids.add(mAuthProvider.getId());                     //El primer usuario que vamos insertar es usuario principal
         ids.add(mExtraIdUser);                              //Insertamos el otro usuario
 
-        chat.setIds(ids);                                   //Pasamos los ids al array
+        mChat.setIds(ids);                                   //Pasamos los ids al array
 
-        mExtraidChat = chat.getId();
+        mExtraidChat = mChat.getId();
 
         //Si se ha creado correctamente...
-        mChatsProvider.create(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mChatsProvider.create(mChat).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 getMessagesByChat();
