@@ -144,17 +144,17 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
                 if(!message.getUrl().equals("")){
                     holder.linearLayoutDocument.setVisibility(View.VISIBLE);
                     holder.imageMessage.setVisibility(View.GONE);
+
                 } else {
                     holder.linearLayoutDocument.setVisibility(View.GONE);
-                    holder.imageMessage.setVisibility(View.GONE);
+
                 }
             } else {
                 holder.linearLayoutDocument.setVisibility(View.GONE);
-                holder.imageMessage.setVisibility(View.GONE);
+
             }
         } else {
             holder.linearLayoutDocument.setVisibility(View.GONE);
-            holder.imageMessage.setVisibility(View.GONE);
         }
     }
 
