@@ -36,10 +36,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -341,7 +343,8 @@ public class ChatActivity extends AppCompatActivity {
                     //Actualiza el numero de mensajes
                     mChatsProvider.updateNumberMessage(mExtraidChat);
                     //Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
-                    sendNotification(message.getMessage());     //Envia el mensaje que envió
+                    //sendNotification(message.getMessage());     //Envia el mensaje que envió
+                    getLastMessages(message);                     //Obtiene los ultimos 5 mensajes no leidos
                 }
             });
 
@@ -351,15 +354,46 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    //Metodo que envia la notificacion cuando cree el mensaje
-    private void sendNotification(String message) {
+
+    //Método que obtiene los ultimos 5 mensajes no leidos del chat
+    private void getLastMessages(final Message message) {
+        mMessagesProvider.getLastMessagesByChatAndSender(mExtraidChat, mAuthProvider.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                if (querySnapshot != null) {
+                    ArrayList<Message> messages = new ArrayList<>();
+
+                    //Recorre cada uno de los documentos que ha retornado la consulta
+                    for(DocumentSnapshot document: querySnapshot.getDocuments()) {
+                        Message m = document.toObject(Message.class);
+                        messages.add(m);
+                    }
+                    //Si el array de messages es igual a 0 (No encuentra ningun mensaje)
+                    if (messages.size() == 0) {
+                        messages.add(message);
+                    }
+                    Collections.reverse(messages);
+                    sendNotification(messages); //Envia los mensajes
+                }
+            }
+        });
+    }
+
+
+    //Método que envia la notificacion cuando cree el mensaje
+    private void sendNotification(ArrayList<Message> messages) {
         //Envía la notificacion //saber el token del usuario que le envia la notificación
         Map<String, String> data = new HashMap<>();                                        //Variable que sirve para transmitir lo que se muestre en la app
         data.put("title", "MENSAJE");                                                //Titulo
-        data.put("body", message);                                                      //Body el mensaje que recibimos
+        data.put("body", "texto mensaje");                                           //Body el mensaje que recibimos
         data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
         data.put("usernameReceiver", mUserReceiver.getUsername());                      //Nombre del usuario que recibe
         data.put("usernameSender", mUserSend.getUsername());                            //Nombre del usuario que envia
+
+        Gson gson = new Gson();
+        String menssagesJSON = gson.toJson(messages);                                      //Convierto el array 'messages' a un JSON
+
+        data.put("menssagesJSON", menssagesJSON);                                       //Los ultimos 5 mensajes no leidos del chat
 
         //Envia la notificacion al usuario que recibe el mensaje
         mNotificationProvider.send(ChatActivity.this, mUserReceiver.getToken(), data);

@@ -20,7 +20,7 @@ public class MessagesProvider {
         mCollection = FirebaseFirestore.getInstance().collection("Messages");
     }
 
-    //Crea la colecion, con id único
+    //Crea la coleccion, con id único
     public Task<Void> create (Message message) {
         //Retorna el id del usuario
         DocumentReference document = mCollection.document();
@@ -33,6 +33,17 @@ public class MessagesProvider {
         //Retorna los mensajes por el id del chat y los ordena de forma ascendente por el campo 'timestamp'
         return mCollection.whereEqualTo("idChat", idChat).orderBy("timestamp", Query.Direction.ASCENDING);
     }
+
+    //Método que obtiene los ultimos mensajes por chat y enviados
+    public Query getLastMessagesByChatAndSender(String idChat, String idSender) {
+        return mCollection
+                .whereEqualTo("idChat", idChat)
+                .whereEqualTo("idSender", idSender)
+                .whereEqualTo("status", "ENVIADO")              //Estado del mensaje igual a ENVIADO
+                .orderBy("timestamp", Query.Direction.DESCENDING)     //Ordenar los mensajes de orden descendente -> ultimos mensajes
+                .limit(5);                                                 //Maximo 5 resultados
+    }
+
 
     //Método que actualiza en el id del Mensaje el campo 'status'
     public Task<Void> updateStatus (String idMessage, String status) {

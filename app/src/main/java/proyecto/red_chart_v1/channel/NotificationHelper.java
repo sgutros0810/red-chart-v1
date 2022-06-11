@@ -8,6 +8,7 @@ import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.os.Build;
 import proyecto.red_chart_v1.R;
+import proyecto.red_chart_v1.models.Message;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -71,7 +72,7 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     //Método de configuracion de estilos de la notificacion
-    public NotificationCompat.Builder getNotificationMessage (String usernameReceiver, String usernameSender, String message) {
+    public NotificationCompat.Builder getNotificationMessage (Message[] messages,String usernameReceiver, String usernameSender) {
         //Persona que envía el mensaje
         Person sendPerson = new Person.Builder()
                 .setName(usernameSender)                                                                        //Nombre del usuario que envia el mensaje
@@ -87,15 +88,18 @@ public class NotificationHelper extends ContextWrapper {
         //Persona que recibe la notificacion se le añade el estilo
         NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(receiverPerson);
 
-        //Configuracion del estilo de notificacion
-        NotificationCompat.MessagingStyle.Message messageNotification = new NotificationCompat.MessagingStyle.Message(
-                message,                 //Mensaje
-                new Date().getTime(),    //Cuando se envio el mensaje
-                receiverPerson          //Persona que recibe el mensaje
-        );
+        //Recorre el array de mensajes (Recorre los ultimos mensajes no leidos del chat)
+        for (Message m: messages) {
+            //Configuracion del estilo de notificacion
+            NotificationCompat.MessagingStyle.Message messageNotification = new NotificationCompat.MessagingStyle.Message(
+                    m.getMessage(),         //Mensaje
+                    m.getTimestamp(),       //Cuando se envio el mensaje
+                    receiverPerson          //Persona que recibe el mensaje
+            );
 
-        //Añade el mensaje
-        messagingStyle.addMessage(messageNotification);
+            //Añade el mensaje
+            messagingStyle.addMessage(messageNotification);
+        }
 
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_icono_round)      //Icono por defecto

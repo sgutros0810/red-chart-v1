@@ -7,11 +7,13 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import java.util.Map;
 import java.util.Random;
 
 import proyecto.red_chart_v1.channel.NotificationHelper;
+import proyecto.red_chart_v1.models.Message;
 
 public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
@@ -59,13 +61,19 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
     //Método que muestra el contenido de la notificación
     private void showNotificationMessage(Map<String, String> data) {
-        String body = data.get("body");                                 //Captura el valor del body
+        //String body = data.get("body");                               //Captura el valor del body
         String idNotification = data.get("idNotification");             //Captura el valor del idNotification
         String usernameSender = data.get("usernameSender");             //Captura el valor del usernameSender
         String usernameReceiver = data.get("usernameReceiver");         //Captura el valor del usernameReceiver
+        String menssagesJSON = data.get("menssagesJSON");               //Captura el valor de un String de los ultimos 5 mensajes no leidos
+
+
+        Gson gson = new Gson();
+        //Convertimos el String a un Array de 'Message'
+        Message[] messages = gson.fromJson(menssagesJSON, Message[].class);
 
         NotificationHelper helper = new NotificationHelper(getBaseContext());
-        NotificationCompat.Builder builder = helper.getNotificationMessage(usernameReceiver, usernameSender, body);
+        NotificationCompat.Builder builder = helper.getNotificationMessage(messages, usernameReceiver, usernameSender);
 
         int id = Integer.parseInt(idNotification);
 
