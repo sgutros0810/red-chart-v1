@@ -1,9 +1,15 @@
 package proyecto.red_chart_v1.services;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Map;
+import java.util.Random;
+
+import proyecto.red_chart_v1.channel.NotificationHelper;
 
 public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
@@ -18,6 +24,25 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
+        //obtener la informacion que nos envian en la notificacion
+        Map<String, String> data = remoteMessage.getData();             //OBTIENE TODA LA INFORMACIÓN QUE ENVIA LA NOTIFICACION
+        String title = data.get("title");                               //Captura el valor del titulo
+        String body = data.get("body");                                 //Captura el valor del body
+
+        //Si el titulo no es nulo (la notificaión tiene al menos un titulo)
+        if (title != null) {
+            showNotification(title, body);
+        }
+    }
+
+    //Método que muestra la notificación
+    private void showNotification(String title, String body) {
+        NotificationHelper helper = new NotificationHelper(getBaseContext());
+        NotificationCompat.Builder builder = helper.getNotification(title, body);
+        Random random = new Random();
+        int n = random.nextInt(10000);
+        helper.getManager().notify(n, builder.build());
     }
 
 }

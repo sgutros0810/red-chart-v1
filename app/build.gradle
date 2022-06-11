@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 
+    //Diseño
     implementation 'io.github.florent37:shapeofview:1.4.7'                   // formas personalizadas
     implementation 'com.hbb20:ccp:2.5.0'                                     // seleccionador de código telefónico de cada pais
     implementation 'de.hdodenhof:circleimageview:3.1.0'                      // implementacion de imagen circular, para la imagen de perfil
@@ -41,9 +42,14 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.1'                              // implementacion de librería que comprime las imagenes
     implementation 'com.github.rahimlis:badgedtablayout:v1.2'                // implementacion de los tabs
     implementation 'com.squareup.picasso:picasso:2.71828'                    // implementacion que muestra la imagen a nuestra aplicacion mediante la url de la bd
-
    // implementation 'com.miguelcatalan:materialsearchview:1.4.0'            // implementacion de Search bar
 
+    //Notificaciones
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'                   // implementacion de Retrofit
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'             // implementacion de Gson
+    implementation 'com.squareup.retrofit2:converter-scalars:2.4.0'          // implementacion de Scalars
+
+    //Firebase
     implementation 'com.google.firebase:firebase-storage:19.1.1'             // implementacion de Firebase Store
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-firestore:24.1.2'

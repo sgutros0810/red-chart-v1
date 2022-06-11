@@ -41,6 +41,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,15 +51,21 @@ import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.adapters.ChatsAdapter;
 import proyecto.red_chart_v1.adapters.MessagesAdapter;
 import proyecto.red_chart_v1.models.Chat;
+import proyecto.red_chart_v1.models.FCMBody;
+import proyecto.red_chart_v1.models.FCMResponse;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ChatsProvider;
 import proyecto.red_chart_v1.providers.FilesProvider;
 import proyecto.red_chart_v1.providers.MessagesProvider;
+import proyecto.red_chart_v1.providers.NotificationProvider;
 import proyecto.red_chart_v1.providers.UsersProvider;
 import proyecto.red_chart_v1.utils.AppBackgroundHelper;
 import proyecto.red_chart_v1.utils.RelativeTime;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -69,6 +77,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatsProvider mChatsProvider;
     MessagesProvider mMessagesProvider;
     FilesProvider mFilesProvider;
+    NotificationProvider mNotificationProvider;
 
     ImageView mImageViewBack;
     ImageView mImageViewSend;
@@ -111,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatsProvider = new ChatsProvider();
         mMessagesProvider = new MessagesProvider();
         mFilesProvider = new FilesProvider();
+        mNotificationProvider = new NotificationProvider();     //implemento la notificaion
 
         mEditTextMessage = findViewById(R.id.editTextMessage);
         mImageViewSend = findViewById(R.id.imageViewSend);
@@ -134,7 +144,6 @@ public class ChatActivity extends AppCompatActivity {
                 .setPath("/pix/images");
 
 
-
         //Muestra el toolbar
         showChatToolbar(R.layout.chat_toolbar);
 
@@ -153,8 +162,9 @@ public class ChatActivity extends AppCompatActivity {
         mImageViewSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Envia el mensaje
+                //Envia el mensaje y la notificacion
                 createMessage();
+
             }
         });
 
@@ -326,6 +336,7 @@ public class ChatActivity extends AppCompatActivity {
                     //Actualiza el numero de mensajes
                     mChatsProvider.updateNumberMessage(mExtraidChat);
                     //Toast.makeText(ChatActivity.this, "El mensaje se creó", Toast.LENGTH_SHORT).show();
+                    sendNotification(message.getMessage());     //Envia el mensaje que envió
                 }
             });
 
@@ -335,6 +346,42 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    //Metodo que envia la notificacion cuando cree el mensaje
+    private void sendNotification(String message) {
+        //Envía la notificacion //saber el token del usuario que le envia la notificación
+        Map<String, String> data = new HashMap<>();                                       //Variable que sirve para transmitir lo que se muestre en la app
+        data.put("title", "NUEVO MENSAJE");                                         //Titulo
+        data.put("body", message);                                                      //Body el mensaje que recibimos
+        FCMBody body = new FCMBody(mUser.getToken(), "high", "4500s", data);    //EL TOKEN DEL USUARIO RECIBE LA NOTIFICACION, PRIORIDAD DEL MENSAJE, TIEMPO QUE SE MUESTRA Y LA INFORMACION QUE ENVIAMOS
+
+        //Envia la notificacion
+        mNotificationProvider.sendNotification(body).enqueue(new Callback<FCMResponse>() {
+            //Si lo envia
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                //Si el cuerpo de la notificacion esta null
+                if (response.body() != null) {
+                    //Si se envia correctamente
+                    if (response.body().getSuccess() == 1) {
+                        Toast.makeText(ChatActivity.this, "La notificacion se envio correctamente", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(ChatActivity.this, "La notificacion no se pudo enviar", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(ChatActivity.this, "no hubo respuesta del servidor", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            //Si falla
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+                Toast.makeText(ChatActivity.this, "Fallo la peticion con retrofit: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
 
     //Método que comprueba si existe un chat con esos ids (el usuario y el usuario con el que chatea)
@@ -551,6 +598,8 @@ public class ChatActivity extends AppCompatActivity {
 
         });
     }
+
+
 
 
     //Muestra el toolbar del chat
