@@ -80,12 +80,17 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
 
             //Si el estado del check es 'ENVIADO'
             if(message.getStatus().equals("ENVIADO")) {
-                //Mostrará el doble check gris (lo recibe y no lo ha visto)
+                //Mostrará el doble check gris (No lo recibe el otro usuario pero se ha enviado)
+                holder.imageViewCheck.setImageResource(R.drawable.icon_check_gris);
+
+            //Si el estado del check es 'RECIBIDO'
+            } else if(message.getStatus().equals("RECIBIDO")) {
+                //Mostrará el doble check azul (lo recibe y no lo ha visto)
                 holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_gris);
 
-                //Si el estado del check es 'VISTO'
-            } else if(message.getStatus().equals("VISTO")) {
-                //Mostrará el doble check azul (lo recibe y lo ha visto)
+            //Si el estado del check es 'VISTO'
+            }  else if(message.getStatus().equals("VISTO")) {
+                //Mostrará el check gris (lo recibe y lo ha visto)
                 holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_blue);
             }
 

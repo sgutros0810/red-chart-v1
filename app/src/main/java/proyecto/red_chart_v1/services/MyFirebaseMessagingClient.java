@@ -11,6 +11,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -24,6 +26,7 @@ import proyecto.red_chart_v1.activities.ChatActivity;
 import proyecto.red_chart_v1.activities.HomeActivity;
 import proyecto.red_chart_v1.channel.NotificationHelper;
 import proyecto.red_chart_v1.models.Message;
+import proyecto.red_chart_v1.providers.MessagesProvider;
 
 public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
@@ -127,6 +130,8 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         Gson gson = new Gson();
         //Convertimos el String a un Array de 'Message'
         Message[] messages = gson.fromJson(menssagesJSON, Message[].class);
+        //Actualiza el estado de los mensajes
+        updateStatus(messages);
 
         NotificationHelper helper = new NotificationHelper(getBaseContext());
 
@@ -134,11 +139,14 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         Intent chatIntent = new Intent(getApplicationContext(), HomeActivity.class);
         chatIntent.putExtra("idUser", idSender);
         chatIntent.putExtra("idChat", idChat);
-        PendingIntent contentIntent = PendingIntent.getActivity(getBaseContext(), id, chatIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                getBaseContext(), id, chatIntent, PendingIntent.FLAG_ONE_SHOT
+        );
 
 
         NotificationCompat.Builder builder = helper.getNotificationMessage(
-                messages, usernameReceiver, usernameSender, bitmapReceiver, contentIntent);
+                messages, usernameReceiver, usernameSender, bitmapReceiver, contentIntent
+        );
 
 
         //Pruebas
@@ -149,6 +157,35 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
         helper.getManager().notify(id, builder.build());
     }
+
+    //Actualiza el estado de ENVIADO a RECIBIDO
+    private void updateStatus(Message[] messages) {
+        final MessagesProvider messagesProvider = new MessagesProvider();
+
+        //Recorre cada mensaje
+        for (Message m: messages) {
+
+            //Si se ha ejecutado correctamente
+            messagesProvider.getMessagesById(m.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    //Si el documento existe
+                    if (documentSnapshot.exists()) {
+                        Message myMessage = documentSnapshot.toObject(Message.class);   //Información del mensaje
+
+                        //Si el estado actual del mensaje no es visto
+                        if (!myMessage.getStatus().equals("VISTO")) {
+                            //Actualiza el estado a 'RECIBIDO'
+                            messagesProvider.updateStatus(myMessage.getId(), "RECIBIDO");
+                        }
+                    }
+                }
+            });
+
+        }
+
+    }
+
 
 }
 
