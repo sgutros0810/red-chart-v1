@@ -8,14 +8,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.adapters.OptionsPagerAdapter;
 import proyecto.red_chart_v1.models.Message;
+import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ImageProvider;
+import proyecto.red_chart_v1.providers.NotificationProvider;
 import proyecto.red_chart_v1.utils.ShadowTransformer;
 
 public class ConfirmImageSendActivity extends AppCompatActivity {
@@ -23,12 +29,16 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
     ViewPager mViewPager;                               //es un ViewGroup que permite desplazarnos por distintos layouts o «páginas» dentro de una misma Activity
     String mExtraIdChat;                                //Id del chat
     String mExtraIdReceiver;                            //Id del usuario que recibe el mensaje
+    String mExtraIdNotification;                        //Id de la notificacion
     ArrayList<String> data;                             //Array que guarda las rutas de cada iamgen
     ArrayList<Message> messages = new ArrayList<>();    //Array que guarda los mensajes de cada iamgen
 
+    User mExtraUserSend;
+    User mExtraUserReceiver;
+
     AuthProvider mAuthProvider;
     ImageProvider mImageProvider;
-
+    NotificationProvider mNotificationProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,12 +47,24 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
         setStatusBarColor();
 
         mViewPager = findViewById(R.id.viewPager);
+
         mAuthProvider = new AuthProvider();
         mImageProvider = new ImageProvider();
+        mNotificationProvider = new NotificationProvider();
 
-        data = getIntent().getStringArrayListExtra("data");     //contiene la ruta de todas las imagenes seleccionadas
-        mExtraIdChat = getIntent().getStringExtra("idChat");    //contiene el id del chat seleccionado
+        data = getIntent().getStringArrayListExtra("data");             //contiene la ruta de todas las imagenes seleccionadas
+        mExtraIdChat = getIntent().getStringExtra("idChat");            //contiene el id del chat seleccionado
         mExtraIdReceiver = getIntent().getStringExtra("idReceiver");    //contiene el id del usuario que recibe el mensaje
+        mExtraIdNotification = getIntent().getStringExtra("idNotification");    //contiene el id del usuario que recibe el mensaje
+
+
+        String userSend = getIntent().getStringExtra("userSend");
+        String userReceiver = getIntent().getStringExtra("userReceiver");
+
+        //Convertimos los String a un Array de 'Message'
+        Gson gson = new Gson();
+        mExtraUserSend = gson.fromJson(userSend, User.class);
+        mExtraUserReceiver = gson.fromJson(userReceiver, User.class);
 
 
         //Validación que 'data' sea diferente de null
@@ -86,12 +108,55 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
         //almacena varios archivos
         mImageProvider.uploadMultiple(ConfirmImageSendActivity.this, messages);
 
+        //Si es una imagen
+        final Message message = new Message();
+        message.setIdChat(mExtraIdChat);
+        message.setIdSender(mAuthProvider.getId());
+        message.setIdReceiver(mExtraIdReceiver);
+        message.setMessage("\uD83D\uDCF7 Imagen");   //Si es una imagen
+        message.setStatus("ENVIADO");
+        message.setType("texto");
+        message.setTimestamp(new Date().getTime());
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(message);  //Lo añadimos
+
+        sendNotification(messages);
+
         //se cierra
         finish();
     }
 
+    //Método que envia la notificacion cuando cree el mensaje
+    private void sendNotification(ArrayList<Message> messages) {
+        //Envía la notificacion //saber el token del usuario que le envia la notificación
+        Map<String, String> data = new HashMap<>();                                        //Variable que sirve para transmitir lo que se muestre en la app
+        data.put("title", "MENSAJE");                                                //Titulo
+        data.put("body", "texto mensaje");                                           //Body el mensaje que recibimos
+        data.put("idNotification", String.valueOf(mExtraIdNotification));               //ID de la notificacion
+        data.put("usernameReceiver", mExtraUserReceiver.getUsername());                 //Nombre del usuario que recibe
+        data.put("usernameSender", mExtraUserSend.getUsername());                       //Nombre del usuario que envia
+        data.put("imageReceiver", mExtraUserReceiver.getImage());                       //Imagen de perfil del usuario que recibe
+        data.put("imageSender", mExtraUserSend.getImage());
+        data.put("idChat", mExtraIdChat);
+        data.put("idSender", mAuthProvider.getId());
+        data.put("idReceiver", mExtraIdReceiver);
+        data.put("tokenSender", mExtraUserSend.getToken());
+        data.put("tokenReceiver", mExtraUserReceiver.getToken());
+
+        Gson gson = new Gson();
+        String menssagesJSON = gson.toJson(messages);                                      //Convierto el array 'messages' a un JSON
+        data.put("menssagesJSON", menssagesJSON);                                       //Los ultimos 5 mensajes no leidos del chat
+        //Envia la notificacion al usuario que recibe el mensaje
+        mNotificationProvider.send(ConfirmImageSendActivity.this, mExtraUserReceiver.getToken(), data);
+    }
+
+
+
     //Método que recoge el texto del editText de cada imagen
     public void setMessages(int position, String message){
+        if (message.equals("")) {
+            message = "\uD83D\uDCF7imagen";
+        }
         messages.get(position).setMessage(message);
     }
 

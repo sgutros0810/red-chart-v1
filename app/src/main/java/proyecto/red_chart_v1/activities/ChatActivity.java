@@ -672,9 +672,19 @@ public class ChatActivity extends AppCompatActivity {
             mReturnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);     //Retorna las imagenes que hemos seleccionado
 
             Intent intent = new Intent(ChatActivity.this, ConfirmImageSendActivity.class);       //Pasamos el contexto y a la actividad que queremos ir
-            intent.putExtra("data", mReturnValue);      //Hace que establezca un 'dato' -> (Todas las rutas de las imagenes seleccionadas)  que envia a la clase 'ConfirmImageSendActivity.class'
-            intent.putExtra("idChat", mExtraidChat);   //Envía el id del chat
-            intent.putExtra("idReceiver", mExtraIdUser);   //Envía el id del usuario que recibe el mensaje
+            intent.putExtra("data", mReturnValue);          //Hace que establezca un 'dato' -> (Todas las rutas de las imagenes seleccionadas)  que envia a la clase 'ConfirmImageSendActivity.class'
+            intent.putExtra("idChat", mExtraidChat);        //Envía el id del chat
+            intent.putExtra("idReceiver", mExtraIdUser);    //Envía el id del usuario que recibe el mensaje
+
+            Gson gson = new Gson();
+            String userSendJSON = gson.toJson(mUserSend);                                      //Convierto el array 'messages' a un JSON
+            String userReceiverJSON = gson.toJson(mUserReceiver);                                      //Convierto el array 'messages' a un JSON
+
+
+            intent.putExtra("userSend", userSendJSON);                      //Envía el id del usuario que recibe el mensaje
+            intent.putExtra("userReceiver", userReceiverJSON);              //Envía el id del usuario que recibe el mensaje
+            intent.putExtra("idNotification", String.valueOf(mChat.getIdNotification()));   //Envía el id de la notificacion
+            
             startActivity(intent);
         }
 
@@ -704,6 +714,19 @@ public class ChatActivity extends AppCompatActivity {
             mFilesProvider.saveFiles(ChatActivity.this, mFileList, mExtraidChat, mExtraIdUser );
 
 
+            //Si es un documento
+            final Message message = new Message();
+            message.setIdChat(mExtraidChat);
+            message.setIdSender(mAuthProvider.getId());
+            message.setIdReceiver(mExtraIdUser);
+            message.setMessage("\uD83D\uDCC4 Documento");   //Si es un documento
+            message.setStatus("ENVIADO");
+            message.setType("texto");
+            message.setTimestamp(new Date().getTime());
+            ArrayList<Message> messages = new ArrayList<>();
+            messages.add(message);  //Lo añadimos
+
+            sendNotification(messages);
         }
 
     }
