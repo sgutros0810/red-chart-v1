@@ -22,6 +22,7 @@ import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
 import proyecto.red_chart_v1.providers.ImageProvider;
 import proyecto.red_chart_v1.providers.NotificationProvider;
+import proyecto.red_chart_v1.utils.ExtensionFile;
 import proyecto.red_chart_v1.utils.ShadowTransformer;
 
 public class ConfirmImageSendActivity extends AppCompatActivity {
@@ -78,9 +79,18 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
                 m.setIdReceiver(mExtraIdReceiver);          //Id del usuario que recibe los mensajes
                 m.setStatus("ENVIADO");                     //Estado del mensaje
                 m.setTimestamp(new Date().getTime());       //Fecha de cuando envia el mensaje
-                m.setType("imagen");                        //Tipo de mensaje -> 'imagen'
                 m.setUrl(data.get(i));                      //Url de la imagen que seleccionamos
-                m.setMessage("\uD83D\uDCF7imagen");        //Emoticono de la camara + 'imagen'
+
+                //Si la extension es una imagen
+                if(ExtensionFile.isImageFile(data.get(i))) {
+                    m.setType("imagen");                       //Tipo de mensaje -> 'imagen'
+                    m.setMessage("\uD83D\uDCF7imagen");        //Emoticono de la camara + 'imagen'
+
+                //Si la extension es un video
+                } else if(ExtensionFile.isVideoFile(data.get(i))) {
+                    m.setType("video");                        //Tipo de mensaje -> 'imagen'
+                    m.setMessage("\uD83C\uDFA5video");        //Emoticono de la camara + 'imagen'
+                }
 
                 messages.add(m);                            //Añadimos el nuevo mensaje, es decir, lo que esta hecho anteriormente
             }
