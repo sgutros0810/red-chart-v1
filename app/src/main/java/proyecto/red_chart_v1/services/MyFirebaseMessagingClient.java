@@ -1,5 +1,7 @@
 package proyecto.red_chart_v1.services;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -18,6 +20,8 @@ import com.squareup.picasso.Target;
 import java.util.Map;
 import java.util.Random;
 
+import proyecto.red_chart_v1.activities.ChatActivity;
+import proyecto.red_chart_v1.activities.HomeActivity;
 import proyecto.red_chart_v1.channel.NotificationHelper;
 import proyecto.red_chart_v1.models.Message;
 
@@ -114,6 +118,11 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
         String usernameSender = data.get("usernameSender");             //Captura el valor del usernameSender
         String usernameReceiver = data.get("usernameReceiver");         //Captura el valor del usernameReceiver
         String menssagesJSON = data.get("menssagesJSON");               //Captura el valor de un String de los ultimos 5 mensajes no leidos
+        int id = Integer.parseInt(idNotification);
+
+        String idChat = data.get("idChat");
+        String idSender = data.get("idSender");
+        String idReceiver = data.get("idReceiver");
 
         Gson gson = new Gson();
         //Convertimos el String a un Array de 'Message'
@@ -121,9 +130,16 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
         NotificationHelper helper = new NotificationHelper(getBaseContext());
 
-        NotificationCompat.Builder builder = helper.getNotificationMessage(messages, usernameReceiver, usernameSender, bitmapReceiver);
+        //Cuando pincha una notificacion va al 'HomeActivity'
+        Intent chatIntent = new Intent(getApplicationContext(), HomeActivity.class);
+        chatIntent.putExtra("idUser", idSender);
+        chatIntent.putExtra("idChat", idChat);
+        PendingIntent contentIntent = PendingIntent.getActivity(getBaseContext(), id, chatIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        int id = Integer.parseInt(idNotification);
+
+        NotificationCompat.Builder builder = helper.getNotificationMessage(
+                messages, usernameReceiver, usernameSender, bitmapReceiver, contentIntent);
+
 
         //Pruebas
         Log.d("NOTIFICACION", "ID: " + id);

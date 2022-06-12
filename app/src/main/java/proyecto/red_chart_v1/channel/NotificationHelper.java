@@ -3,6 +3,7 @@ package proyecto.red_chart_v1.channel;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
@@ -77,7 +78,8 @@ public class NotificationHelper extends ContextWrapper {
             Message[] messages,
             String usernameReceiver,
             String usernameSender,
-            Bitmap bitmapReceiver
+            Bitmap bitmapReceiver,
+            PendingIntent contentIntent
     ) {
         //Persona que envía el mensaje
         Person sendPerson = new Person.Builder()
@@ -115,6 +117,7 @@ public class NotificationHelper extends ContextWrapper {
                     m.getMessage(),         //Mensaje
                     m.getTimestamp(),       //Cuando se envio el mensaje
                     receiverPerson          //Persona que recibe el mensaje
+
             );
 
             //Añade el mensaje
@@ -123,8 +126,8 @@ public class NotificationHelper extends ContextWrapper {
 
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_icono_round)      //Icono por defecto
-                .setStyle(messagingStyle);                  //Se aplica el estilo creado
-
+                .setStyle(messagingStyle)                  //Se aplica el estilo creado
+                .setContentIntent(contentIntent);
     }
 
 
