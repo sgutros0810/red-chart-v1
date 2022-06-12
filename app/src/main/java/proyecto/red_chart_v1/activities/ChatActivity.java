@@ -141,9 +141,9 @@ public class ChatActivity extends AppCompatActivity {
         mOptions = Options.init()
                 .setRequestCode(100)                                          //Request code for activity results
                 .setCount(5)                                                  //Numero de imagenes que podemos seleccionar
-                .setFrontfacing(false)                                         //Por defecto, se pone la camara trasera
+                .setFrontfacing(false)                                        //Por defecto, se pone la camara trasera
                 .setPreSelectedUrls(mReturnValue)                             //Pre selected Image Urls
-                .setExcludeVideos(true)                                       //No permite videos
+                .setExcludeVideos(false)                                      //Permite videos
                 .setVideoDurationLimitinSeconds(0)                            //Duracion del video
                 .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT)    //Orientacion vertical
                 .setPath("/pix/images");

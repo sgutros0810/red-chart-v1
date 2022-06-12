@@ -24,7 +24,43 @@
             android:scaleType="centerCrop"
             android:layout_marginTop="60dp"
             android:layout_weight="1"
+            android:visibility="visible"
             />
+
+        <FrameLayout
+            android:id="@+id/frameLayoutVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:visibility="gone"
+            android:layout_weight="1">
+
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <!-- Circulo para el icono  -->
+            <View
+                android:id="@+id/viewVideo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circular_view"
+                android:backgroundTint="@color/black"
+                android:alpha="0.7" />
+
+            <!-- Imagen del icono reproducción -->
+            <ImageView
+                android:id="@+id/imageViewVideo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_play"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
