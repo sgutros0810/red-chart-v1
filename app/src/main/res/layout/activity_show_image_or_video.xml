@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/cardViewOptions"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.ShowImageOrVideoActivity"
+    app:cardBackgroundColor="@color/colorFullBlack">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageViewPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fondo"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:visibility="visible"
+            />
+
+        <FrameLayout
+            android:id="@+id/frameLayoutVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:layout_weight="1">
+
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <View
+                android:id="@+id/viewVideo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/circular_view"
+                android:backgroundTint="@color/colorGrayDark"
+                android:layout_gravity="center"
+                android:alpha="0.7" />
+
+            <ImageView
+                android:id="@+id/imageViewVideo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_play"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorFullBlack"
+            android:alpha="0.4" />
+
+
+        <ImageView
+            android:id="@+id/imageViewBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"/>
+
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

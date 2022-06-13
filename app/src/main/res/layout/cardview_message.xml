@@ -15,18 +15,44 @@
         android:orientation="vertical"
         android:paddingLeft="30dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="5dp">
 
         <ImageView
-            android:id="@+id/imageMessage"
+            android:id="@+id/imageViewMessage"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:maxHeight="250dp"
-            android:scaleType="centerCrop"
-            android:layout_marginRight="17dp"
+            android:layout_height="200dp"
             android:src="@drawable/fondo"
-            android:visibility="gone"/>
+            android:scaleType="centerCrop"
+            android:minWidth="305dp"
+            android:visibility="gone"
+            android:layout_marginRight="9dp" />
 
+        <FrameLayout
+            android:id="@+id/frameLayoutVideo"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:minWidth="305dp"
+            android:background="@color/black"
+            android:layout_marginRight="9dp"
+            android:layout_weight="1">
+
+            <View
+                android:id="@+id/viewVideo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circular_view"
+                android:backgroundTint="@color/colorGrayDark"
+                android:layout_gravity="center"
+                android:alpha="0.7" />
+
+            <ImageView
+                android:id="@+id/imageViewVideo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_play"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/textViewMessage"
@@ -38,7 +64,6 @@
         <!-- android:layout_marginRight="15dp" -->
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,12 +71,12 @@
             android:orientation="horizontal">
 
             <LinearLayout
-               android:id="@+id/linearLayoutDocument"
+                android:id="@+id/linearLayoutDocument"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:visibility="gone">
 
                 <ImageView
@@ -62,10 +87,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Documento"
-                    android:textSize="12dp"
                     android:layout_marginLeft="1dp"
-                    android:layout_marginRight="5dp"/>
+                    android:layout_marginRight="5dp"
+                    android:text="Documento"
+                    android:textSize="12dp" />
 
             </LinearLayout>
 
@@ -84,8 +109,6 @@
                 android:src="@drawable/icon_check_double_gris" />
 
         </LinearLayout>
-
-
 
 
     </LinearLayout>

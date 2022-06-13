@@ -22,7 +22,6 @@ public class MessagesProvider {
     }
 
 
-
     //Crea la coleccion, con id único
     public Task<Void> create (Message message) {
         //Retorna el id del usuario
@@ -30,7 +29,6 @@ public class MessagesProvider {
         message.setId(document.getId());                        //Id de la colecion del documento 'Message'
         return document.set(message);
     }
-
 
 
     //Metodo retorna el resultado de una consulta, creo en Firestore Database un índice (doble consulta)
@@ -47,8 +45,6 @@ public class MessagesProvider {
         return mCollection
                 .document(idMessage);
     }
-
-
 
     //Método que obtiene los ultimos mensajes por chat y enviados o recibidos
     public Query getLastMessagesByChatAndSender(String idChat, String idSender) {

@@ -8,29 +8,24 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
-import proyecto.red_chart_v1.activities.ChatActivity;
-import proyecto.red_chart_v1.models.Chat;
+import proyecto.red_chart_v1.activities.ShowImageOrVideoActivity;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
 import proyecto.red_chart_v1.providers.AuthProvider;
@@ -56,8 +51,8 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
     }
 
     /**
-    * Muestra los valores que vienen de la bd en el cardview
-    **/
+     * Muestra los valores que vienen de la bd en el cardview
+     **/
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Message message) {
         holder.textViewMessage.setText(message.getMessage());   //Obtenemos el mensaje y lo muestra
@@ -83,12 +78,12 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
                 //Mostrará el doble check gris (No lo recibe el otro usuario pero se ha enviado)
                 holder.imageViewCheck.setImageResource(R.drawable.icon_check_gris);
 
-            //Si el estado del check es 'RECIBIDO'
+                //Si el estado del check es 'RECIBIDO'
             } else if(message.getStatus().equals("RECIBIDO")) {
                 //Mostrará el doble check azul (lo recibe y no lo ha visto)
                 holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_gris);
 
-            //Si el estado del check es 'VISTO'
+                //Si el estado del check es 'VISTO'
             }  else if(message.getStatus().equals("VISTO")) {
                 //Mostrará el check gris (lo recibe y lo ha visto)
                 holder.imageViewCheck.setImageResource(R.drawable.icon_check_double_blue);
@@ -112,6 +107,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         }
 
         showImage(holder, message);
+        showVideo(holder, message);
         showDocument(holder, message);
         openMessage(holder, message);
     }
@@ -137,6 +133,12 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
                     DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                     downloadManager.enqueue(request);  //Ejecuta la descarga
 
+                } else if(message.getType().equals("imagen") || message.getType().equals("video")){
+                    Intent intent = new Intent(context, ShowImageOrVideoActivity.class);
+                    intent.putExtra("type", message.getType());
+                    intent.putExtra("url", message.getUrl());
+                    context.startActivity(intent);
+
                 }
             }
         });
@@ -148,7 +150,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             if(message.getUrl() != null ){
                 if(!message.getUrl().equals("")){
                     holder.linearLayoutDocument.setVisibility(View.VISIBLE);
-                    holder.imageMessage.setVisibility(View.GONE);
+                    //holder.imageViewMessage.setVisibility(View.GONE);
 
                 } else {
                     holder.linearLayoutDocument.setVisibility(View.GONE);
@@ -163,18 +165,87 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         }
     }
 
+    //Método que muestra el video
+    private void showVideo(ViewHolder holder, Message message){
+        //Si el tipo de mensaje es video
+        if (message.getType().equals("video")) {
+            if (message.getUrl() != null) {
+                if (!message.getUrl().equals("")) {
+                    holder.frameLayoutVideo.setVisibility(View.VISIBLE);
+                    //Libreria que muestra la imagen a nuestra aplicacion mediante una url
+                    Picasso.get().load(message.getUrl()).into(holder.imageViewMessage);
+
+                    if (message.getMessage().equals("\uD83C\uDFA5video")) {
+                        holder.textViewMessage.setVisibility(View.GONE);
+                        //holder.textViewDate.setPadding(0,0,10,0);
+                        ViewGroup.MarginLayoutParams marginDate = (ViewGroup.MarginLayoutParams) holder.textViewDate.getLayoutParams();
+                        ViewGroup.MarginLayoutParams marginCheck = (ViewGroup.MarginLayoutParams) holder.imageViewCheck.getLayoutParams();
+                        marginDate.topMargin = 15;
+                        marginCheck.topMargin = 15;
+
+                    }
+                    else {
+                        holder.textViewMessage.setVisibility(View.VISIBLE);
+                    }
+                }
+                else {
+                    holder.frameLayoutVideo.setVisibility(View.GONE);
+                    holder.textViewMessage.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                holder.frameLayoutVideo.setVisibility(View.GONE);
+                holder.textViewMessage.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            holder.frameLayoutVideo.setVisibility(View.GONE);
+            holder.textViewMessage.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
 
     //Método que muestra la imagen
     private void showImage(ViewHolder holder, Message message) {
-        if (message.getUrl() != null){
-            holder.imageMessage.setVisibility(View.VISIBLE);                                                          //Mostrar la imagen con un mensaje
 
-            //Libreria que muestra la imagen a nuestra aplicacion mediante una url
-            Picasso.get().load(message.getUrl()).into(holder.imageMessage);
+        //Si el tipo de mensaje es imagen
+        if (message.getType().equals("imagen")) {
+            if (message.getUrl() != null) {
+                if (!message.getUrl().equals("")) {
+                    holder.imageViewMessage.setVisibility(View.VISIBLE);
+                    //Libreria que muestra la imagen a nuestra aplicacion mediante una url
+                    Picasso.get().load(message.getUrl()).into(holder.imageViewMessage);
 
-        }else{
-            holder.imageMessage.setVisibility(View.GONE);                                                          //Ocultar la imagen con un mensaje
+                    if (message.getMessage().equals("\uD83D\uDCF7imagen")) {
+                        holder.textViewMessage.setVisibility(View.GONE);
+                        //holder.textViewDate.setPadding(0,0,10,0);
+                        ViewGroup.MarginLayoutParams marginDate = (ViewGroup.MarginLayoutParams) holder.textViewDate.getLayoutParams();
+                        ViewGroup.MarginLayoutParams marginCheck = (ViewGroup.MarginLayoutParams) holder.imageViewCheck.getLayoutParams();
+                        marginDate.topMargin = 15;
+                        marginCheck.topMargin = 15;
+
+                    }
+                    else {
+                        holder.textViewMessage.setVisibility(View.VISIBLE);
+                    }
+                }
+                else {
+                    holder.imageViewMessage.setVisibility(View.GONE);
+                    holder.textViewMessage.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                holder.imageViewMessage.setVisibility(View.GONE);
+                holder.textViewMessage.setVisibility(View.VISIBLE);
+            }
         }
+        else {
+            holder.imageViewMessage.setVisibility(View.GONE);
+            holder.textViewMessage.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -197,9 +268,12 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
         TextView textViewMessage;
         TextView textViewDate;
         ImageView imageViewCheck;
-        ImageView imageMessage;
+        ImageView imageViewMessage;
         LinearLayout linearLayoutMessage;
         LinearLayout linearLayoutDocument;
+        FrameLayout frameLayoutVideo;
+        View viewVideo;
+        ImageView imageViewVideo;
 
         View myView;
 
@@ -209,12 +283,15 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             myView=view;        //Representa a cada view -> contacto
 
             //Instaciamos los id del 'cardview_contacts'
-            textViewMessage = view.findViewById(R.id.textViewMessage);
-            textViewDate = view.findViewById(R.id.textViewDate);
-            imageViewCheck= view.findViewById(R.id.imageViewCheck);
-            imageMessage= view.findViewById(R.id.imageMessage);
-            linearLayoutMessage = view.findViewById(R.id.linearLayoutMessage);
-            linearLayoutDocument = view.findViewById(R.id.linearLayoutDocument);
+            textViewMessage         = view.findViewById(R.id.textViewMessage);
+            textViewDate            = view.findViewById(R.id.textViewDate);
+            imageViewCheck          = view.findViewById(R.id.imageViewCheck);
+            imageViewMessage        = view.findViewById(R.id.imageViewMessage);
+            linearLayoutMessage     = view.findViewById(R.id.linearLayoutMessage);
+            linearLayoutDocument    = view.findViewById(R.id.linearLayoutDocument);
+            frameLayoutVideo        = view.findViewById(R.id.frameLayoutVideo);
+            viewVideo               = view.findViewById(R.id.viewVideo);
+            imageViewVideo          = view.findViewById(R.id.imageViewVideo);
         }
     }
 
