@@ -10,7 +10,7 @@ public class Chat {
     private int numberMessages;     //Nº de mensajes en el chat
     private int idNotification;     //id de notificacion por chat
     private boolean isMultiChat;    //Para saber si es un chat con varios usaurios (Grupo)
-    private String groupChat;       //Nombre del chat del grupo
+    private String groupName;       //Nombre del chat del grupo
     private String groupImage;      //Imagen del chat del grupo
 
 
@@ -19,7 +19,7 @@ public class Chat {
     }
 
     //Constructor con las variables
-    public Chat(String id, String writing, long timestamp, ArrayList<String> ids, int numberMessages, int idNotification, boolean isMultiChat, String groupChat, String groupImage) {
+    public Chat(String id, String writing, long timestamp, ArrayList<String> ids, int numberMessages, int idNotification, boolean isMultiChat, String groupName, String groupImage) {
         this.id = id;
         this.writing = writing;
         this.timestamp = timestamp;
@@ -27,10 +27,9 @@ public class Chat {
         this.numberMessages = numberMessages;
         this.idNotification = idNotification;
         this.isMultiChat = isMultiChat;
-        this.groupChat = groupChat;
+        this.groupName = groupName;
         this.groupImage = groupImage;
     }
-
 
     //Getters y setters
     public String getId() {
@@ -89,12 +88,12 @@ public class Chat {
         isMultiChat = multiChat;
     }
 
-    public String getGroupChat() {
-        return groupChat;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroupChat(String groupChat) {
-        this.groupChat = groupChat;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getGroupImage() {
@@ -104,5 +103,4 @@ public class Chat {
     public void setGroupImage(String groupImage) {
         this.groupImage = groupImage;
     }
-
 }

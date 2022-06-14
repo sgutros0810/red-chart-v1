@@ -77,14 +77,13 @@ public class AddMultiUsersActivity extends AppCompatActivity {
                         Toast.makeText(AddMultiUsersActivity.this, "Seleccione al menos dos usuarios", Toast.LENGTH_SHORT).show();
                     }
 
-
-
                     /*
                         //PRUEBA  imprime cada uno de los usuarios seleccionados
                         for (User user: mUsersSelected) {
                             Log.d("USUARIO", "nombre: " + user.getUsername());
                         }
                      */
+
                 } else {
                     Toast.makeText(AddMultiUsersActivity.this, "Por favor, seleccione los usuarios", Toast.LENGTH_SHORT).show();
                 }
