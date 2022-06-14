@@ -21,9 +21,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity
+            android:name=".activities.ConfirmMultiChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.AddMultiUsersActivity"
             android:exported="false"
-            android:parentActivityName=".activities.HomeActivity"/>
+            android:parentActivityName=".activities.HomeActivity" />
         <activity
             android:name=".activities.ShowImageOrVideoActivity"
             android:exported="false" />
