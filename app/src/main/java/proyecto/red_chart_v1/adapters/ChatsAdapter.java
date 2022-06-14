@@ -2,6 +2,7 @@ package proyecto.red_chart_v1.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,13 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.activities.ChatActivity;
+import proyecto.red_chart_v1.activities.ChatMultiActivity;
 import proyecto.red_chart_v1.models.Chat;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
@@ -76,17 +79,44 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         //Obtiene el ultimo mensaje del chat
         getLastMessage(holder, chat.getId());
 
-        //Obtiene la información del usuario
-        getUserInfo(holder, idUser);
+        //Si el chat, es un chat Multiple. (Un grupo con varios usuarios)
+        if(chat.isMultiChat()){
+
+            //Obtiene la información del grupo de usuarios
+           getMultiChatInfo(holder, chat);
+
+        //Si no es un grupo
+        } else {
+
+            //Obtiene la información del usuario
+            getUserInfo(holder, idUser);
+
+        }
 
         //Obtiene los mensajes no leidos
         getMessagesNotRead(holder, chat.getId());
 
-        //
         setWriting(holder, chat);
 
         //Me muestra el chat
-        clickMyView(holder, chat.getId(), idUser);
+        clickMyView(holder, chat, idUser);
+    }
+
+    // Método que obtiene la informacion del grupo por id
+    private void getMultiChatInfo(ViewHolder holder, Chat chat) {
+        //Si la imagen del grupo no es null (existe)
+        if(chat.getGroupImage() != null){
+
+            //Si la imagen del grupo no esta vacio (existe)
+            if(!chat.getGroupImage().equals("")){
+                //Muestra la imagen
+                Picasso.get().load(chat.getGroupImage()).into(holder.circleImageUser);
+            }
+        }
+
+        //Establece el nombre
+        holder.textViewUsername.setText(chat.getGroupName());
+
     }
 
 
@@ -187,13 +217,28 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
     }
 
     //Cuando pulse sobre un usuario, me muestra su chat
-    private void clickMyView(ViewHolder holder,  final String idChat, final String idUser) {
+    private void clickMyView(ViewHolder holder, Chat chat, final String idUser) {
         holder.myView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToChatActivity(idChat, idUser);
+                //Si es un chat de grupo
+                if(chat.isMultiChat()){
+                    goToChatMultiActivity(chat);
+                } else {
+                    goToChatActivity(chat.getId(), idUser);
+                }
+
             }
         });
+    }
+
+    //Muestra la pantalla del chat del grupo
+    private void goToChatMultiActivity(Chat chat) {
+        Intent intent = new Intent(context, ChatMultiActivity.class);
+        Gson gson = new Gson();
+        String chatJSON = gson.toJson(chat);
+        intent.putExtra("chat", chatJSON);
+        context.startActivity(intent);
     }
 
     // Método que obtiene la informacion del usuario por id
@@ -238,7 +283,7 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         return listenerLastMessage;
     }
 
-    //Muestra la pantalla del chat del cusuario con el id
+    //Muestra la pantalla del chat del usuario con el id
     private void goToChatActivity(String idChat, String idUser) {
         Intent intent = new Intent(context, ChatActivity.class);
         //Enviamos el id del usuario seleccionado por parametro
