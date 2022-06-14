@@ -10,6 +10,7 @@ public class User {
     private String token;       //token para las notificaciones
     private long lastConnect;   //Última vez que se conecto
     private boolean online;     //Esta 'En linea'
+    private boolean selected;   //Para saber si el usuario fue seleccionado(Añadir un grupo)
 
     // Contructor vacío
     public User() {
@@ -17,7 +18,7 @@ public class User {
     }
 
     // Contructor con todas las variables
-    public User(String id, String username, String phone, String image, String info, String token, long lastConnect, boolean online) {
+    public User(String id, String username, String phone, String image, String info, String token, long lastConnect, boolean online, boolean selected) {
         this.id = id;
         this.username = username;
         this.phone = phone;
@@ -26,6 +27,7 @@ public class User {
         this.token = token;
         this.lastConnect = lastConnect;
         this.online = online;
+        this.selected = selected;
     }
 
     // Getters y Setters
@@ -91,5 +93,13 @@ public class User {
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

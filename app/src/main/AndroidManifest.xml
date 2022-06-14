@@ -21,6 +21,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
         <activity
+            android:name=".activities.AddMultiUsersActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.HomeActivity"/>
+        <activity
             android:name=".activities.ShowImageOrVideoActivity"
             android:exported="false" />
         <activity

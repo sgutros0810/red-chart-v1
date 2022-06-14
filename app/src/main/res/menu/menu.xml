@@ -7,6 +7,13 @@
         android:title="Perfil"
         android:icon="@drawable/ic_option_white"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/itemAdd"
+        android:title="Nuevo grupo"
+        android:icon="@drawable/ic_option_white"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/itemCerrarSesion"
         android:title="Cerrar sesión"

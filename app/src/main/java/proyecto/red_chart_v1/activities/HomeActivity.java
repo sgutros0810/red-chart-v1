@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -118,9 +117,15 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.itemCerrarSesion:
                 signOut();
                 return true;
+
             case R.id.itemPerfil:
                 goToProfile();
                 return true;
+
+            case R.id.itemAdd:
+                goToAddMultiUsers();
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -128,6 +133,14 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
+
+    //Método que va a la actividad de seleccionar usuarios para añadirlos a un grupo
+    private void goToAddMultiUsers() {
+        Intent intent = new Intent(HomeActivity.this, AddMultiUsersActivity.class);
+        startActivity(intent);
+    }
+
+
 
     // Método que establece el icono en la posicion 0
     private void setupTabIcom() {
