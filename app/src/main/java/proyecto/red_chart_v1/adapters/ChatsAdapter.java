@@ -21,11 +21,13 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import proyecto.red_chart_v1.R;
 import proyecto.red_chart_v1.activities.ChatActivity;
+import proyecto.red_chart_v1.activities.ChatMultiActivity;
 import proyecto.red_chart_v1.models.Chat;
 import proyecto.red_chart_v1.models.Message;
 import proyecto.red_chart_v1.models.User;
@@ -76,8 +78,15 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         //Obtiene el ultimo mensaje del chat
         getLastMessage(holder, chat.getId());
 
-        //Obtiene la información del usuario
-        getUserInfo(holder, idUser);
+        if(chat.isMultiChat()){
+            getMultiChatInfo(holder, chat);
+        } else {
+
+            //Obtiene la información del usuario
+            getUserInfo(holder, idUser);
+
+        }
+
 
         //Obtiene los mensajes no leidos
         getMessagesNotRead(holder, chat.getId());
@@ -86,7 +95,18 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
         setWriting(holder, chat);
 
         //Me muestra el chat
-        clickMyView(holder, chat.getId(), idUser);
+        clickMyView(holder, chat, idUser);
+    }
+
+    private void getMultiChatInfo(ViewHolder holder, Chat chat) {
+
+        if(chat.getGroupImage() != null) {
+            if (!chat.getGroupImage().equals("")) {
+                Picasso.get().load(chat.getGroupImage()).into(holder.circleImageUser);
+            }
+        }
+
+        holder.textViewUsername.setText(chat.getGroupName());
     }
 
 
@@ -187,13 +207,27 @@ public class ChatsAdapter extends FirestoreRecyclerAdapter <Chat, ChatsAdapter.V
     }
 
     //Cuando pulse sobre un usuario, me muestra su chat
-    private void clickMyView(ViewHolder holder,  final String idChat, final String idUser) {
+    private void clickMyView(ViewHolder holder, final Chat chat, final String idUser) {
         holder.myView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToChatActivity(idChat, idUser);
+                //Si es un grupo
+                if(chat.isMultiChat()){
+                    goToChatActivity(chat);
+                } else {
+                    goToChatActivity(chat.getId(), idUser);
+                }
+
             }
         });
+    }
+
+    private void goToChatActivity(Chat chat) {
+        Intent intent = new Intent(context, ChatMultiActivity.class);
+        Gson gson = new Gson();
+        String chatJSON = gson.toJson(chat);
+        intent.putExtra("chat", chatJSON);
+        context.startActivity(intent);
     }
 
     // Método que obtiene la informacion del usuario por id

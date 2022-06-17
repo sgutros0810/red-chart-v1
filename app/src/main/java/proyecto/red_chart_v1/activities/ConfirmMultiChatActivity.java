@@ -107,7 +107,7 @@ public class ConfirmMultiChatActivity extends AppCompatActivity {
                 mGroupName = mTextInputGroupName.getText().toString();  //nombre de usuario que introduce el usuario
 
                 //Validación de que no este vacio el usuario y el suario seleccione una imagen
-                if(!mGroupName.equals("") && mGroupName != null) {
+                if(!mGroupName.equals("") && mImageFile != null) {
                     saveImage();      //Primero guardamos la imagen
                 } else {
                     Toast.makeText(ConfirmMultiChatActivity.this, "Seleccione una imagen y/o ingrese el nombre del grupo", Toast.LENGTH_LONG).show();

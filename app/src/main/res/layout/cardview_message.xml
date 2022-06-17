@@ -15,44 +15,60 @@
         android:orientation="vertical"
         android:paddingLeft="30dp"
         android:paddingTop="10dp"
+        android:paddingRight="10dp"
         android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/imageViewMessage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/fondo"
-            android:scaleType="centerCrop"
+            android:layout_marginRight="9dp"
             android:minWidth="305dp"
-            android:visibility="gone"
-            android:layout_marginRight="9dp" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/fondo"
+            android:visibility="gone" />
 
         <FrameLayout
             android:id="@+id/frameLayoutVideo"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:minWidth="305dp"
-            android:background="@color/black"
             android:layout_marginRight="9dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/black"
+            android:minWidth="305dp"
+            android:visibility="gone">
 
             <View
                 android:id="@+id/viewVideo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/circular_view"
-                android:backgroundTint="@color/colorGrayDark"
                 android:layout_gravity="center"
-                android:alpha="0.7" />
+                android:alpha="0.7"
+                android:background="@drawable/circular_view"
+                android:backgroundTint="@color/colorGrayDark" />
 
             <ImageView
                 android:id="@+id/imageViewVideo"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_play"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play" />
 
         </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/textViewUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="15dp"
+            android:text="Nombre del usuario"
+            android:textSize="14dp"
+            android:visibility="gone" />
+        <!--  bb -->
+
 
         <TextView
             android:id="@+id/textViewMessage"

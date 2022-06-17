@@ -55,7 +55,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
      **/
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull final Message message) {
-        holder.textViewMessage.setText(message.getMessage());   //Obtenemos el mensaje y lo muestra
+        holder.textViewMessage.setText(message.getMessage());                                      //Obtenemos el mensaje y lo muestra
         holder.textViewDate.setText(RelativeTime.timeFormatAMPM(message.getTimestamp(),context));  //Muestra la fecha personalizada
 
         //Si nosotros enviado el mensaje
@@ -104,6 +104,19 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             holder.textViewMessage.setTextColor(Color.BLACK);                                                               //Color del texto de mensaje
             holder.textViewDate.setTextColor(Color.DKGRAY);                                                                 //Color del texto de la fecha/hora
             holder.imageViewCheck.setVisibility(View.GONE);                                                                 //Ocultar el estado del check
+
+
+            //Si el mensaje se envia en un grupo
+            if(message.getReceivers() != null){
+                holder.textViewUsername.setVisibility(View.VISIBLE);    //Se muestra el nombre de usuario
+                holder.textViewUsername.setText(message.getUsername()); //Pone el nombre del usuario que envia el mensaje
+                //si es un mensaje a un solo usuario
+            } else {
+                holder.textViewUsername.setVisibility(View.GONE);       //Se muestra el nombre de usuario
+               // holder.textViewUsername.setText(message.getUsername()); //Pone el nombre del usuario que envia el mensaje
+
+            }
+
         }
 
         showImage(holder, message);
@@ -267,6 +280,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
 
         TextView textViewMessage;
         TextView textViewDate;
+        TextView textViewUsername;
         ImageView imageViewCheck;
         ImageView imageViewMessage;
         LinearLayout linearLayoutMessage;
@@ -285,6 +299,7 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             //Instaciamos los id del 'cardview_contacts'
             textViewMessage         = view.findViewById(R.id.textViewMessage);
             textViewDate            = view.findViewById(R.id.textViewDate);
+            textViewUsername        = view.findViewById(R.id.textViewUsername);
             imageViewCheck          = view.findViewById(R.id.imageViewCheck);
             imageViewMessage        = view.findViewById(R.id.imageViewMessage);
             linearLayoutMessage     = view.findViewById(R.id.linearLayoutMessage);
