@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ChatsFragment mChatsFragment;           // Fragmento de Chats
     ContactsFragment mContactsFragment;     // Fragmento de Contactos
-    CameraFragment mCameraFragment;         // Fragmento de Cámara
+    //CameraFragment mCameraFragment;         // Fragmento de Cámara
 
     int mTabSelected = 1;                   // el tab de CHATS
 
@@ -60,19 +60,19 @@ public class HomeActivity extends AppCompatActivity {
         // Instacia de fragmetos
         mChatsFragment = new ChatsFragment();
         mContactsFragment = new ContactsFragment();
-        mCameraFragment = new CameraFragment();
+        //mCameraFragment = new CameraFragment();
 
 
 
         // Añade los fragmentos en el adapter (Fragmento, titulo)
-        adapter.addFragment(mCameraFragment, "");
+        //adapter.addFragment(mCameraFragment, "");
         adapter.addFragment(mChatsFragment, "CHATS" );
         adapter.addFragment(mContactsFragment, "CONTACTOS" );
         mViewPager.setAdapter(adapter);                                                     // Lo añade
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(mTabSelected);                                            // Cuando se abre la aplicacion, se abre por defecto en el tab seleccionado
 
-        setupTabIcom();
+        //setupTabIcom();
 
         mUsersProvider = new UsersProvider();
         mAuthProvider = new AuthProvider();
@@ -141,6 +141,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    /*
 
     // Método que establece el icono en la posicion 0
     private void setupTabIcom() {
@@ -153,6 +154,10 @@ public class HomeActivity extends AppCompatActivity {
         layoutParams.weight = 0.5f;     // Ancho
         linearLayout.setLayoutParams(layoutParams);
     }
+
+     */
+
+
 
     // Método que cierra sesión
     private void signOut(){

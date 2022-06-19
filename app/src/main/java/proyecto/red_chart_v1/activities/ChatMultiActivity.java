@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
@@ -101,11 +102,17 @@ public class ChatMultiActivity extends AppCompatActivity {
     //Variables para la liberia Pix
     Options mOptions;
     ArrayList<String> mReturnValue = new ArrayList<>();
+    ArrayList<User> mReceivers = new ArrayList<>();         //Almacenará todos los usuarios que participan en un grupo
+    int mCount = 0;
+    String mReceiversName = "";                            //Almacenará los nombres de los usuarios del grupo
+
 
     final int ACTION_FILE = 2;
     ArrayList<Uri> mFileList;
 
     Chat mChat;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +172,9 @@ public class ChatMultiActivity extends AppCompatActivity {
 
         getUserSend();
 
+        //Obtiene la informacion de todos los usuarios que se encuentran en un grupo
+        getReceiversInfo();
+
         //comprueba si existe un chat
         checkIfExistChat();
 
@@ -200,6 +210,34 @@ public class ChatMultiActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //Metodo que trata de obtener la informacion de los usuarios de un grupo
+    private void getReceiversInfo() {
+        //Recorre los ids de los usuarios que estan dentro del grupo
+        for (String id: mReceiversId) {
+            mUsersProvider.getUserInfo(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    User user = documentSnapshot.toObject(User.class);  //Obtiene la informacion de un usuario
+                    mReceivers.add(user);                               //Lo añadimos al array de usuarios 'mReceivers'
+                    mCount++;                                           //incrementa 1
+
+                    //Si termino de ejecutarse la consulta (Si mCount es igual al tamaño de los usuarios que hay)
+                    if(mCount == mReceiversId.size()) {
+                        //Recorre la lista de usuarios obtenida
+                        for (User u : mReceivers) {
+                            mReceiversName = mReceiversName + u.getUsername() + ", ";   //Añadimos el nombre de un suario y despues una coma
+                        }
+                        mTextViewOnline.setText(mReceiversName);//Nombre de losusuarios que participan
+                    }
+
+                }
+            });
+        }
+    }
+
+
 
     //Metodo que trata de obtener los tipos de archivos que son validos para subir en el 'ChatActivity'
     private void selectFiles() {
@@ -399,18 +437,28 @@ public class ChatMultiActivity extends AppCompatActivity {
         data.put("title", "MENSAJE");                                                //Titulo
         data.put("body", "texto mensaje");                                           //Body el mensaje que recibimos
         data.put("idNotification", String.valueOf(mChat.getIdNotification()));          //ID de la notificacion
-        data.put("usernameSender",  "");                                            //Nombre del usuario que envia
+        data.put("usernameSender",  "");                                             //Nombre del usuario que envia
 
         data.put("usernameReceiver", mUserSend.getUsername());                          //Nombre del usuario que recibe
-        data.put("imageReceiver", "");                                //Imagen de perfil del usuario
+        data.put("imageReceiver", "");                                               //Imagen de perfil del usuario
 
         Gson gson = new Gson();
         String menssagesJSON = gson.toJson(messages);                                      //Convierto el array 'messages' a un JSON
 
         data.put("menssagesJSON", menssagesJSON);                                       //Los ultimos 5 mensajes no leidos del chat
 
+
+        List<String> tokens = new ArrayList<>();                                           //Token de los usuarios que participan en el grupo
+
+        //Recorre la lista de usuarios que hay en el grupo
+        for ( User u: mReceivers) {
+            //Añade el token de cada usuario, en la lista de string 'tokens'
+            tokens.add(u.getToken());
+        }
+        
+        
         //Envia la notificacion al usuario que recibe el mensaje
-        mNotificationProvider.send(ChatMultiActivity.this, null, data);
+        mNotificationProvider.send(ChatMultiActivity.this, tokens, data);
     }
 
 

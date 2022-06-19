@@ -3,6 +3,7 @@ package proyecto.red_chart_v1.providers;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Map;
 
 import proyecto.red_chart_v1.activities.ChatActivity;
@@ -31,8 +32,8 @@ public class NotificationProvider {
     }
 
     //Método que no retorna
-    public void send(Context context, String token, Map<String, String> data){   //token del usuario que envia la nofiticacion,
-        FCMBody body = new FCMBody(token, "high", "4500s", data);    //EL TOKEN DEL USUARIO RECIBE LA NOTIFICACION, PRIORIDAD DEL MENSAJE, TIEMPO QUE SE MUESTRA Y LA INFORMACION QUE ENVIAMOS
+    public void send(Context context, List<String> tokens, Map<String, String> data){   //token del usuario que envia la nofiticacion,
+        FCMBody body = new FCMBody(tokens, "high", "4500s", data);    //EL TOKEN DEL USUARIO RECIBE LA NOTIFICACION, PRIORIDAD DEL MENSAJE, TIEMPO QUE SE MUESTRA Y LA INFORMACION QUE ENVIAMOS
 
         sendNotification(body).enqueue(new Callback<FCMResponse>() {
             //Si lo envia

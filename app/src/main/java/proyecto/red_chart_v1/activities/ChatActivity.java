@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
@@ -397,8 +398,11 @@ public class ChatActivity extends AppCompatActivity {
 
         data.put("menssagesJSON", menssagesJSON);                                       //Los ultimos 5 mensajes no leidos del chat
 
+        List<String> tokens = new ArrayList<>();                                           //Token del usuario del chat
+        tokens.add(mUserReceiver.getToken());                                               //Añade el token del usuario al que enviamos
+
         //Envia la notificacion al usuario que recibe el mensaje
-        mNotificationProvider.send(ChatActivity.this, mUserReceiver.getToken(), data);
+        mNotificationProvider.send(ChatActivity.this, tokens, data);
     }
 
 

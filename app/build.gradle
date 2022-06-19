@@ -36,13 +36,17 @@ dependencies {
 
     //Diseño
     implementation 'io.github.florent37:shapeofview:1.4.7'                   // formas personalizadas
-    implementation 'com.hbb20:ccp:2.5.0'                                     // seleccionador de código telefónico de cada pais
     implementation 'de.hdodenhof:circleimageview:3.1.0'                      // implementacion de imagen circular, para la imagen de perfil
+    implementation 'com.github.rahimlis:badgedtablayout:v1.2'                // implementacion de los tabs
+   // implementation 'com.miguelcatalan:materialsearchview:1.4.0'            // implementacion de Search bar
+
+
+    //Funciones
+    implementation 'com.hbb20:ccp:2.5.0'                                     // seleccionador de código telefónico de cada pais
     implementation 'com.fxn769:pix:1.5.3'                                    // implementacion de réplica del selector de imágenes de WhatsApp
     implementation 'id.zelory:compressor:2.1.1'                              // implementacion de librería que comprime las imagenes
-    implementation 'com.github.rahimlis:badgedtablayout:v1.2'                // implementacion de los tabs
     implementation 'com.squareup.picasso:picasso:2.71828'                    // implementacion que muestra la imagen a nuestra aplicacion mediante la url de la bd
-   // implementation 'com.miguelcatalan:materialsearchview:1.4.0'            // implementacion de Search bar
+
 
     //Notificaciones
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'                   // implementacion de Retrofit

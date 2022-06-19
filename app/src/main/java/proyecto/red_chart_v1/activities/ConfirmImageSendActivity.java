@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import proyecto.red_chart_v1.R;
@@ -156,8 +157,14 @@ public class ConfirmImageSendActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String menssagesJSON = gson.toJson(messages);                                      //Convierto el array 'messages' a un JSON
         data.put("menssagesJSON", menssagesJSON);                                       //Los ultimos 5 mensajes no leidos del chat
+
+
+        List<String> tokens = new ArrayList<>();                                           //Token del usuario del chat
+        tokens.add(mExtraUserReceiver.getToken());                                         //Añade el token del usuario al que enviamos
+
+
         //Envia la notificacion al usuario que recibe el mensaje
-        mNotificationProvider.send(ConfirmImageSendActivity.this, mExtraUserReceiver.getToken(), data);
+        mNotificationProvider.send(ConfirmImageSendActivity.this, tokens, data);
     }
 
 

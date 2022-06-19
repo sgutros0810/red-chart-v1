@@ -114,7 +114,6 @@ public class MessagesAdapter extends FirestoreRecyclerAdapter <Message, Messages
             } else {
                 holder.textViewUsername.setVisibility(View.GONE);       //Se muestra el nombre de usuario
                // holder.textViewUsername.setText(message.getUsername()); //Pone el nombre del usuario que envia el mensaje
-
             }
 
         }

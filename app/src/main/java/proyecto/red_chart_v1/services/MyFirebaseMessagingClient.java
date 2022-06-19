@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -143,11 +144,11 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
                 getBaseContext(), id, chatIntent, PendingIntent.FLAG_ONE_SHOT
         );
 
-
         NotificationCompat.Builder builder = helper.getNotificationMessage(
                 messages, usernameReceiver, usernameSender, bitmapReceiver, contentIntent
         );
-
+        builder.setAutoCancel(true)                                                                 //Borrra la notificacion al pinchar
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));        //Hace sonido la notificacion
 
         //Pruebas
         Log.d("NOTIFICACION", "ID: " + id);
@@ -156,7 +157,11 @@ public class MyFirebaseMessagingClient extends FirebaseMessagingService {
 
 
         helper.getManager().notify(id, builder.build());
+
     }
+
+
+
 
     //Actualiza el estado de ENVIADO a RECIBIDO
     private void updateStatus(Message[] messages) {

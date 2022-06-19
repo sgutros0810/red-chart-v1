@@ -6,10 +6,21 @@
     tools:context=".fragments.CameraFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+
+    <LinearLayout
+        android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="CAMERA FRAGMENT"
-        android:gravity="center"/>
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="CAMERA FRAGMENT"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </FrameLayout>

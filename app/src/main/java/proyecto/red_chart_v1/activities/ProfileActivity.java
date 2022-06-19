@@ -228,7 +228,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Muestra el bottom Sheet de la imagen
     private void openBottomSheetSelectImage() {
-        //Validacion de que usuario no sea null
+        //Validacion de que usurious no sea null
         if(mUser != null){
             mBottomSheetSelectImage = BottomSheetSelectImage.newInstance(mUser.getImage());
             mBottomSheetSelectImage.show(getSupportFragmentManager(), mBottomSheetSelectImage.getTag());
